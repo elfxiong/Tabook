@@ -19,5 +19,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/users/(?P<id>.+)',get_user)
+    url(r'^api/users/create', create_user),
+    url(r'^api/users/(?P<id>.+)', get_user),
 ]
