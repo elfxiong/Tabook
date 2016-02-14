@@ -2,10 +2,13 @@ from django.db import models
 
 
 class User(models.Model):
-    username = models.CharField(max_length=30)
-    password = models.CharField(max_length=128)
+    username = models.CharField(max_length=30) #need setter
+    password = models.CharField(max_length=128) #need setter
     email = models.EmailField(null=True, blank=True)
-    phone = models.CharField(max_length=20, null=True, blank=True)  # TBD
+    phone = models.CharField(max_length=20, null=True, blank=True)  # TBD #need setter
+
+    def __str__(self):
+        return str(self.id) + " " + self.username
 
 
 class Customer(User):
