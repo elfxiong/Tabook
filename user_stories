@@ -1,0 +1,20 @@
+TableBooking (Tabook)
+
+Eliza Nie (yn9sa)
+Qian Xiong (qx2dk)
+
+User Stories
+1. As a user, I want to sign up on the website.
+2. As a user, I want to sign in the website.
+3. As a customer, I want to search for a particular restaurant by name on the website.
+4. As a customer, I want to see a list of nearby restaurants.
+5. As a customer, I want to sort restaurants by a certain criteria (popularity/ numbers of reviews/ distance/etc)
+6. As a customer, I want to search for an available table by the number of people and by the meal time.
+7. As a customer, I want to view the restaurant menu.
+8. As a customer, I want to reserve a table.
+9. As a customer, I want to cancel a reservation.
+10. As a customer, I want to receive an email/text reminder before the reserved time.
+11. As a restaurant, I want to create and update my restaurant profile/menu.
+12. As a user, I want to the reservation status to be up-to-date.
+13. As a restaurant, I want to be able to manually update available tables.
+14. As a restaurant, I want to receive a notification for any reservation.

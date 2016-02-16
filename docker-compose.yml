@@ -3,6 +3,6 @@ isa-models:
    image: tp33/django:1.2
    external_links:
      - mysql:db
-   command: bash -c "git clone https://github.com/elfxiong/isa-models.git && mod_wsgi-express start-server ./isa-models/Tabook_models/wsgi.py &"
+   command: bash -c "git clone https://github.com/elfxiong/isa-models.git && mod_wsgi-express start-server --working-directory ./isa-models ./isa-models/Tabook_models/wsgi.py"
    ports:
      - "8000:8000"
