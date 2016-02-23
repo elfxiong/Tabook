@@ -69,3 +69,6 @@ venv
 
 # default db
 db.sqlite3
+
+# tmp file
+*~

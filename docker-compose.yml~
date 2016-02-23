@@ -1,8 +1,0 @@
-isa-models:
-   container_name: tabook-isa-models
-   image: tp33/django:1.2
-   external_links:
-     - mysql:db
-   command: bash -c "git clone https://github.com/elfxiong/isa-models.git && mod_wsgi-express start-server ./Tabook_models/wsgi.py"
-   ports:
-     - "8000:8000"
