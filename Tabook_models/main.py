@@ -52,13 +52,14 @@ def update_customer(request):
         except Customer.DoesNotExist:
             content['result'] = "Customer not found"
         else:
-            content['changed'] = []
+            changed = []
             for field_name in ['username', 'email', 'phone']:
                 if field_name in request.POST:
                     value = request.POST[field_name]
                     setattr(user, field_name, value)
-                    content['changed'].append(field_name)
+                    changed.append(field_name)
             user.save()
+            content['changed'] = changed
             content['success'] = True
     return JsonResponse(content)
 
@@ -112,19 +113,13 @@ def reset_restaurant_info(request):
         except Restaurant.DoesNotExist:
             content['result'] = "Restaurant not found"
         else:
-            content['changed'] = []
-            if 'username' in request.POST:
-                username = request.POST['username']
-                user.username = username
-                content['changed'] += 'username'
-            if 'email' in request.POST:
-                email = request.POST['email']
-                user.email = email
-                content['changed'] += 'email'
-            if 'phone' in request.POST:
-                phone = request.POST['phone']
-                user.phone = phone
-                content['changed'] = 'phone'
+            changed = []
+            for field_name in ['username', 'email', 'phone']:
+                if field_name in request.POST:
+                    value = request.POST[field_name]
+                    setattr(user, field_name, value)
+                    changed.append(field_name)
             user.save()
+            content['changed'] = changed
             content['success'] = True
     return JsonResponse(content)
