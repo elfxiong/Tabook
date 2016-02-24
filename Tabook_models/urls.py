@@ -21,5 +21,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/customers/create/$', create_customer),
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),
-    url(r'^api/customers/reset_customer_info/$', reset_customer_info)
+    url(r'^api/customers/update/$', update_customer)
 ]

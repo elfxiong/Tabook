@@ -39,7 +39,7 @@ def get_customer(request, id):
     return JsonResponse(content)
 
 
-def reset_customer_info(request):
+def update_customer(request):
     content = {'success': False}
     if request.method != "POST":
         content['result'] = "Invalid request method"
@@ -57,7 +57,7 @@ def reset_customer_info(request):
                 if field_name in request.POST:
                     value = request.POST[field_name]
                     setattr(user, field_name, value)
-                    content['changed'] += field_name
+                    content['changed'].append(field_name)
             user.save()
             content['success'] = True
     return JsonResponse(content)
