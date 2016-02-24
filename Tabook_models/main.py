@@ -5,39 +5,40 @@ from .models import User
 
 def reset_user_info(request):
     content = {'success': False}
-    if request.method == "POST":
-        if request.POST['id']:
-            try:
-                uid = request.POST['id']
-                user = User.objects.get(pk=uid)
-            except User.DoesNotExist:
-                content['result'] = "User not found"
-            else:
-                content['changed'] = []
-                if 'username' in request.POST:
-                    username = request.POST['username']
-                    user.username = username
-                    content['changed'] += 'username'
-                if 'email' in request.POST:
-                    email = request.POST['email']
-                    user.email = email
-                    content['changed'] += 'email'
-                if 'phone' in request.POST:
-                    phone = request.POST['phone']
-                    user.phone = phone
-                    content['changed'] = 'phone'
-                user.save()
-                content['success'] = True
-        else:
-            content['result'] = "User id not provided"
-    else:
+    if request.method != "POST":
         content['result'] = "Invalid request method"
+    elif 'id' not in request.POST:
+        content['result'] = "User id not provided"
+    else:
+        try:
+            uid = request.POST['id']
+            user = User.objects.get(pk=uid)
+        except User.DoesNotExist:
+            content['result'] = "User not found"
+        else:
+            content['changed'] = []
+            if 'username' in request.POST:
+                username = request.POST['username']
+                user.username = username
+                content['changed'] += 'username'
+            if 'email' in request.POST:
+                email = request.POST['email']
+                user.email = email
+                content['changed'] += 'email'
+            if 'phone' in request.POST:
+                phone = request.POST['phone']
+                user.phone = phone
+                content['changed'] = 'phone'
+            user.save()
+            content['success'] = True
     return JsonResponse(content)
 
 
 def get_user(request, id):
     content = {"success": False}
-    if request.method == 'GET':
+    if request.method != 'GET':
+        content['result'] = "Invalid request method"
+    else:
         try:
             user = User.objects.get(pk=id)
         except User.DoesNotExist:
@@ -52,7 +53,9 @@ def get_user(request, id):
 
 def create_user(request):
     content = {'success': False}
-    if request.method == 'POST':
+    if request.method != 'POST':
+        content['result'] = "Invalid request method"
+    else:
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
@@ -61,7 +64,4 @@ def create_user(request):
         else:
             content['result'] = "Failed to create a new user"
             content['html'] = form.errors
-    else:
-        content['result'] = "Invalid request method"
-        pass  # do no respond
     return JsonResponse(content)
