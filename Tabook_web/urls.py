@@ -16,7 +16,9 @@ Including another URLconf
 from Tabook_web.main import *
 from django.conf.urls import url
 from django.contrib import admin
+from . import main
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^', main.homepage, name='homepage'),
 ]
