@@ -52,7 +52,7 @@ def update_customer(request):
             content['result'] = "Customer not found"
         else:
             changed = []
-            for field_name in ['username', 'email', 'phone']:
+            for field_name in ['username', 'password', 'first_name', 'last_name','email', 'phone']:
                 if field_name in request.POST:
                     value = request.POST[field_name]
                     setattr(user, field_name, value)
@@ -112,7 +112,7 @@ def update_restaurant(request):
             content['result'] = "Restaurant not found"
         else:
             changed = []
-            for field_name in ['username', 'email', 'phone']:
+            for field_name in ['username', 'password', 'email', 'phone', 'address', 'price', 'category']:
                 if field_name in request.POST:
                     value = request.POST[field_name]
                     setattr(user, field_name, value)
