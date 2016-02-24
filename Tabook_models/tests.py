@@ -1,6 +1,6 @@
 from django.test import TestCase, RequestFactory
-from .models import Customer
-from .main import create_customer, update_customer, get_customer
+from .models import Customer, Restaurant
+from .main import create_customer, update_customer, get_customer, filter_restaurant
 
 
 class CustomerAPITestCase(TestCase):
@@ -53,4 +53,42 @@ class CustomerAPITestCase(TestCase):
         request = self.factory.post('/api/customers/update_customer/', post_data)
         response = update_customer(request)
         expected_json = {'changed': ['email'], 'success': True}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+
+class RestaurantAPITestCase(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        Restaurant.objects.create(username="lion", password="roar", email="roar@lion.zoo", phone="55555")
+        Restaurant.objects.create(username="cat", password="meow", email="meow@cat.zoo", phone="333")
+
+    def test_filter_restaurant(self):
+        get_data = {}
+        request = self.factory.get('/api/restaurants/filter/', get_data)
+        response = filter_restaurant(request)
+        expected_json = {'result': [{'id': 1, 'username': 'lion'}, {'id': 2, 'username': 'cat'}], 'success': True}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+        get_data = {'username': 'lion'}
+        request = self.factory.get('/api/restaurants/filter/', get_data)
+        response = filter_restaurant(request)
+        expected_json = {'result': [{'id': 1, 'username': 'lion'}], 'success': True}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+        get_data = {'phone': '55555'}
+        request = self.factory.get('/api/restaurants/filter/', get_data)
+        response = filter_restaurant(request)
+        expected_json = {'result': [{'id': 1, 'username': 'lion'}], 'success': True}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+        get_data = {'email': 'roar@lion.zoo', 'phone': '55555'}
+        request = self.factory.get('/api/restaurants/filter/', get_data)
+        response = filter_restaurant(request)
+        expected_json = {'result': [{'id': 1, 'username': 'lion'}], 'success': True}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+        get_data = {'username': 'bear'}
+        request = self.factory.get('/api/restaurants/filter/', get_data)
+        response = filter_restaurant(request)
+        expected_json = {'result': [], 'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)

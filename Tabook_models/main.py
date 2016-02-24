@@ -121,3 +121,16 @@ def update_restaurant(request):
             content['changed'] = changed
             content['success'] = True
     return JsonResponse(content)
+
+
+def filter_restaurant(request):
+    content = {'success': False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method"
+    else:
+        parameters = ['id', 'username', 'email', 'phone']
+        query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
+        restaurants = Restaurant.objects.filter(**query_attrs)
+        content['success'] = True
+        content['result'] = [{'id': r.id, 'username': r.username} for r in restaurants]
+    return JsonResponse(content)
