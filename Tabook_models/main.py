@@ -30,12 +30,11 @@ def get_customer(request, id):
         try:
             user = Customer.objects.get(pk=id)
         except Customer.DoesNotExist:
-            content["result"] = "customer not found"
+            content["result"] = "Customer not found"
         else:
+            for field_name in ['id', 'username', 'email', 'phone']:
+                content[field_name] = getattr(user, field_name)
             content["success"] = True
-            for key, value in {'id': user.id, 'username': user.username, 'email': user.email,
-                               'phone': user.phone}.items():
-                content[key] = value
     return JsonResponse(content)
 
 
@@ -93,14 +92,13 @@ def get_restaurant(request, id):
         except Restaurant.DoesNotExist:
             content["result"] = "restaurant not found"
         else:
+            for field_name in ['id', 'username', 'email', 'phone']:
+                content[field_name] = getattr(user, field_name)
             content["success"] = True
-            for key, value in {'id': user.id, 'username': user.username, 'email': user.email,
-                               'phone': user.phone}.items():
-                content[key] = value
     return JsonResponse(content)
 
 
-def reset_restaurant_info(request):
+def update_restaurant(request):
     content = {'success': False}
     if request.method != "POST":
         content['result'] = "Invalid request method"

@@ -21,5 +21,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/customers/create/$', create_customer),
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),
-    url(r'^api/customers/update/$', update_customer)
+    url(r'^api/customers/update/$', update_customer),
+    url(r'^api/restaurants/create/$', create_restaurant),
+    url(r'^api/restaurants/(?P<id>\d+)/$', get_restaurant),
+    url(r'^api/restaurants/update/$', update_restaurant)
 ]
