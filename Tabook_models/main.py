@@ -1,20 +1,116 @@
-from Tabook_models.forms import UserCreationForm
+from Tabook_models.forms import CustomerCreationForm, RestaurantCreationForm
 from django.http import JsonResponse
-from .models import User
+from .models import Customer, Restaurant
 
 
-def reset_user_info(request):
+# customer
+
+
+def create_customer(request):
+    content = {'success': False}
+    if request.method != 'POST':
+        content['result'] = "Invalid request method"
+    else:
+        form = CustomerCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            content['success'] = True
+            content['id'] = user.id
+        else:
+            content['result'] = "Failed to create a new customer"
+            content['html'] = form.errors
+    return JsonResponse(content)
+
+
+def get_customer(request, id):
+    content = {"success": False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method"
+    else:
+        try:
+            user = Customer.objects.get(pk=id)
+        except Customer.DoesNotExist:
+            content["result"] = "customer not found"
+        else:
+            content["success"] = True
+            for key, value in {'id': user.id, 'username': user.username, 'email': user.email,
+                               'phone': user.phone}.items():
+                content[key] = value
+    return JsonResponse(content)
+
+
+def reset_customer_info(request):
     content = {'success': False}
     if request.method != "POST":
         content['result'] = "Invalid request method"
     elif 'id' not in request.POST:
-        content['result'] = "User id not provided"
+        content['result'] = "Customer id not provided"
     else:
         try:
             uid = request.POST['id']
-            user = User.objects.get(pk=uid)
-        except User.DoesNotExist:
-            content['result'] = "User not found"
+            user = Customer.objects.get(pk=uid)
+        except Customer.DoesNotExist:
+            content['result'] = "Customer not found"
+        else:
+            content['changed'] = []
+            for field_name in ['username', 'email', 'phone']:
+                if field_name in request.POST:
+                    value = request.POST[field_name]
+                    setattr(user, field_name, value)
+                    content['changed'] += field_name
+            user.save()
+            content['success'] = True
+    return JsonResponse(content)
+
+
+# restaurant
+
+
+def create_restaurant(request):
+    content = {'success': False}
+    if request.method != 'POST':
+        content['result'] = "Invalid request method"
+    else:
+        form = RestaurantCreationForm(request.POST)
+        if form.is_valid():
+            restaurant = form.save()
+            content['success'] = True
+            content['id'] = restaurant.id
+        else:
+            content['result'] = "Failed to create a new restaurant"
+            content['html'] = form.errors
+    return JsonResponse(content)
+
+
+def get_restaurant(request, id):
+    content = {"success": False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method"
+    else:
+        try:
+            user = Restaurant.objects.get(pk=id)
+        except Restaurant.DoesNotExist:
+            content["result"] = "restaurant not found"
+        else:
+            content["success"] = True
+            for key, value in {'id': user.id, 'username': user.username, 'email': user.email,
+                               'phone': user.phone}.items():
+                content[key] = value
+    return JsonResponse(content)
+
+
+def reset_restaurant_info(request):
+    content = {'success': False}
+    if request.method != "POST":
+        content['result'] = "Invalid request method"
+    elif 'id' not in request.POST:
+        content['result'] = "Restaurant id not provided"
+    else:
+        try:
+            uid = request.POST['id']
+            user = Restaurant.objects.get(pk=uid)
+        except Restaurant.DoesNotExist:
+            content['result'] = "Restaurant not found"
         else:
             content['changed'] = []
             if 'username' in request.POST:
@@ -31,37 +127,4 @@ def reset_user_info(request):
                 content['changed'] = 'phone'
             user.save()
             content['success'] = True
-    return JsonResponse(content)
-
-
-def get_user(request, id):
-    content = {"success": False}
-    if request.method != 'GET':
-        content['result'] = "Invalid request method"
-    else:
-        try:
-            user = User.objects.get(pk=id)
-        except User.DoesNotExist:
-            content["result"] = "user not found"
-        else:
-            content["success"] = True
-            for key, value in {'id': user.id, 'username': user.username, 'email': user.email,
-                               'phone': user.phone}.items():
-                content[key] = value
-    return JsonResponse(content)
-
-
-def create_user(request):
-    content = {'success': False}
-    if request.method != 'POST':
-        content['result'] = "Invalid request method"
-    else:
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            content['success'] = True
-            content['id'] = user.id
-        else:
-            content['result'] = "Failed to create a new user"
-            content['html'] = form.errors
     return JsonResponse(content)
