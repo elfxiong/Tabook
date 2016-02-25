@@ -73,13 +73,13 @@ WSGI_APPLICATION = 'Tabook_web.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 # DATABASES = {
-    # 'default': {
-        # 'ENGINE': 'mysql.connector.django',
-        # 'NAME': 'cs4501',
-        # 'USER': 'www',
-        # 'PASSWORD': 'S3cure',
-        # 'HOST': 'db',
-    # }
+# 'default': {
+# 'ENGINE': 'mysql.connector.django',
+# 'NAME': 'cs4501',
+# 'USER': 'www',
+# 'PASSWORD': 'S3cure',
+# 'HOST': 'db',
+# }
 # }
 
 # Password validation
@@ -117,3 +117,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# layers
+EXP_LAYER_URL = "http://0.0.0.0:8001/"
