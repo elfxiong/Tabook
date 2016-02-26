@@ -22,16 +22,16 @@ class Customer(User):
 class Restaurant(User):
     restaurant_name = models.CharField(max_length=30)
     address = models.CharField(max_length=200)
-    price = models.PositiveSmallIntegerField() #number of dollar signs
-    category = models.CharField(max_length=30) 
+    price_range = models.PositiveSmallIntegerField(default=0)  # number of dollar signs
+    category = models.CharField(max_length=30, default="unclassified")
 
 
 class Table(models.Model):
     restaurant = models.ForeignKey(Restaurant)
     capacity = models.PositiveSmallIntegerField()
-    shape = models.CharField(max_length=30)
-    x_coordinate = models.DecimalField()
-    y_coordinate = models.DecimalField()
+    style = models.CharField(max_length=30, default='unspecified')
+    x_coordinate = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)  # XXXXX.XX
+    y_coordinate = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)  # XXXXX.XX
 
 
 class TableStatus(models.Model):  # name TBD
