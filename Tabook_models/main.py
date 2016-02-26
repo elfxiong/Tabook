@@ -1,6 +1,6 @@
 from Tabook_models.forms import CustomerCreationForm, RestaurantCreationForm
 from django.http import JsonResponse
-from .models import Customer, Restaurant
+from .models import *
 
 
 # customer
@@ -133,4 +133,18 @@ def filter_restaurant(request):
         restaurants = Restaurant.objects.filter(**query_attrs)
         content['success'] = True
         content['result'] = [{'id': r.id, 'username': r.username} for r in restaurants]
+    return JsonResponse(content)
+
+
+#given a table and a date, return the availability of that table at that date time
+def table_status(request):
+    content = {'success': False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method"
+    else:
+        query_attrs = {'table_id' : request.GET['table_id'], 'date' : request.GET['date']}
+        status = TableStatus.objects.filter(**query_attrs)
+        if status:
+            content['result'] = {'table_status': status[0].available}
+            content['success'] = True
     return JsonResponse(content)
