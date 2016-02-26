@@ -40,8 +40,8 @@ class TableStatus(models.Model):  # name TBD
     available = models.BooleanField(default=False)
 
 
-class Reservation:
+class Reservation(models.Model):
     customer = models.ForeignKey(Customer)
     table_status = models.ForeignKey(TableStatus)
-    status = models.CharField()
+    status = models.CharField(max_length=30)
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
