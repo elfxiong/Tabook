@@ -14,8 +14,15 @@ def get_customer(request):
     pass
 
 
+
+
+#given a table id and a date, return the availability of that table at that date time
 def get_table_status(request):
-    pass
+    request_url = settings.MODELS_LAYER_URL + "api/restaurants/table_request/"
+    req = urllib.request.Request(request_url, method='GET')
+    resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+    table_status = json.loads(resp_json)
+    return JsonResponse(table_status)
 
 
 # search by location, price, category, restaurant name
