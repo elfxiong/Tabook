@@ -10,3 +10,20 @@ class CustomerAdmin(admin.ModelAdmin):
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Table)
+class RestaurantAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(TableStatus)
+class RestaurantAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Reservation)
+class RestaurantAdmin(admin.ModelAdmin):
+    pass
+
+
