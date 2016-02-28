@@ -20,4 +20,6 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^restaurants/all/$', search_restaurant),
+    url(r'^restaurants/table_status$', get_table_status),
+
 ]
