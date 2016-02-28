@@ -1,7 +1,7 @@
 import json
 import urllib.parse
 import urllib.request
-
+import requests
 from django.http import JsonResponse
 from django.conf import settings
 
@@ -36,12 +36,8 @@ def create_restaurant(request):
         content["result"] = "GET Request Recieved. Expected POST."
     else:
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
-        print(request.POST)
-        req = urllib.request.Request(request_url, method='POST', data=str(request.POST).encode('utf-8')) # data is bytes obj
-        req.add_header('Content-Length', len(request.POST))
-        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-        content = json.loads(resp_json)
-        print("---------\n",content)
+        response = requests.post(request_url, data = request.POST.dict())
+        content = json.loads(response.content.decode('utf-8'))
         if not content['success']:
             # Models layer failed
             error = {}
