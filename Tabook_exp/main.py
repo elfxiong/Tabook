@@ -6,8 +6,53 @@ from django.http import JsonResponse
 from django.conf import settings
 
 
-def get_restaurant(request):
-    pass
+def get_restaurant(request, id):
+    content = {"success": False}
+    if request.method != "GET":
+        content["result"] = "POST Request Recieved. Expected GET."
+    else:
+        id = id
+        # Sanitize ID
+        request_url = settings.MODELS_LAYER_URL + "api/restaurants/" + id + "/"
+        req = urllib.request.Request(request_url, method='GET')
+        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+        content = json.loads(resp_json)
+        if not content['success']:
+            # Models layer failed
+            error = {}
+            if content['result'] == "Invalid request method":
+                error["type"] = "POST Request Recieved. Expected GET."
+                return json.loads(error)
+
+            if content["result"] == "Restaurant not found":
+                error["type"] = "The requested restaurant was not found."
+            return JsonResponse(error)
+    return JsonResponse(content)
+
+
+def create_restaurant(request):
+    content = {"success": False}
+    if request.method != "POST":
+        content["result"] = "GET Request Recieved. Expected POST."
+    else:
+        request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
+        print(request.POST)
+        req = urllib.request.Request(request_url, method='POST', data=str(request.POST).encode('utf-8')) # data is bytes obj
+        req.add_header('Content-Length', len(request.POST))
+        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+        content = json.loads(resp_json)
+        print("---------\n",content)
+        if not content['success']:
+            # Models layer failed
+            error = {}
+            if content['result'] == "Invalid request method":
+                error["type"] = "GET Request Recieved. Expected POST."
+                return JsonResponse(error)
+            if content["result"] == "restaurant not found":
+                error["type"] = "Restaurant creation failed."
+            return JsonResponse(error)
+    return JsonResponse(content)
+
 
 
 def get_customer(request):
