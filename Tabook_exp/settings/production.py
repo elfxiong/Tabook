@@ -119,4 +119,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # layers
-MODELS_LAYER_URL = "http://0.0.0.0:8000/"
+MODELS_LAYER_URL = "http://models-api:8000/"
+
