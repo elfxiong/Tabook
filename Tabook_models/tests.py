@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
-from .models import Customer, Restaurant, Table
-
+from .models import Customer, Restaurant, Table, Review
+import json
 
 class CustomerAPITestCase(TestCase):
     def setUp(self):
@@ -68,8 +68,9 @@ class CustomerAPITestCase(TestCase):
 class RestaurantAPITestCase(TestCase):
     def setUp(self):
         self.factory = Client()
-        Restaurant.objects.create(username="lion", password="roar", email="roar@lion.zoo", phone="55555")
-        Restaurant.objects.create(username="cat", password="meow", email="meow@cat.zoo", phone="333")
+        c = Customer.objects.create(username="user", password="pass", email="user@user.com", phone="00000")
+        r1 = Restaurant.objects.create(username="lion", password="roar", email="roar@lion.zoo", phone="55555")
+        r2 = Restaurant.objects.create(username="cat", password="meow", email="meow@cat.zoo", phone="333")
 
     def test_create_restaurant(self):
         post_data = {'username': 'myrestaurant', 'password': 'pas', 'restaurant_name': 'Tabook Restaurant',
@@ -145,6 +146,23 @@ class RestaurantAPITestCase(TestCase):
         expected_json = {'result': [], 'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
+    def test_create_review_sucessful(self):
+        post_data = {'customer_id': 1, 'restaurant_id': 1,
+                     'stars': "5", 'text': 'great food'}
+        response = self.factory.post('/api/restaurants/reviews/create/', post_data)
+
+        expected_data = {"success": True, 'id': 1}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
+
+    def test_get_reviews_single(self):
+        Review.objects.create(customer=Customer.objects.get(id=1), restaurant=Restaurant.objects.get(id=1),
+                              stars=5, text='great food')
+        get_data = {'restaurant_id' : '1'}
+        response = self.factory.get('/api/restaurants/reviews/', get_data)
+        response_json = json.loads(str(response.content, encoding='utf-8'))
+        response_json['result'][0]['created'] = '0' # reset date field b/c untestable
+        expected_json = {'result':[{'customer_id': 1, 'text': 'great food', 'created': '0', 'stars': 5, 'id': 1}], 'success': True}
+        self.assertDictEqual(response_json, expected_json)
 
 class TableAPITestCase(TestCase):
     def setUp(self):

@@ -1,4 +1,4 @@
-from Tabook_models.forms import CustomerCreationForm, RestaurantCreationForm
+from Tabook_models.forms import CustomerCreationForm, RestaurantCreationForm, ReviewCreationForm
 from django.http import JsonResponse
 from .models import *
 import urllib
@@ -171,4 +171,42 @@ def filter_tables(request):
         content['success'] = True
         infos = ['id', 'restaurant_id', 'capacity', 'style', 'x_coordinate', 'y_coordinate']
         content['result'] = [{field: getattr(r, field) for field in infos} for r in restaurants]
+    return JsonResponse(content)
+
+def create_review(request):
+    content = {'success': False}
+    if request.method != 'POST':
+        content['result'] = "Invalid request method. Expected POST."
+    else:
+        form = ReviewCreationForm({'restaurant': request.POST['restaurant_id'],
+                                   'customer'  : request.POST['customer_id'],
+                                   'stars'     : request.POST['stars'],
+                                   'text'      : request.POST['text']})
+        if form.is_valid():
+            review = form.save()
+            content['success'] = True
+            content['id'] = review.id
+        else:
+            content['result'] = "Failed to create a new review"
+            content['html'] = form.errors
+    return JsonResponse(content)
+
+def get_reviews(request):
+    content = {'success': False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method"
+    else:
+        query_attrs = {'id' : request.GET['restaurant_id']}
+        restaurant = Restaurant.objects.get(**query_attrs)
+        reviews = Review.objects.filter(restaurant=restaurant)
+        print(reviews)
+        if reviews:
+            infos = ['id', 'stars', 'text', 'created']
+            for r in reviews:
+                fields = {field: getattr(r, field) for field in infos}
+                fields['customer_id'] = r.customer.id
+                content['result'] = [fields]
+            content['success'] = True
+        else:
+            content['result'] = "No reviews found."
     return JsonResponse(content)

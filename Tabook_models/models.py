@@ -20,7 +20,7 @@ class Customer(User):
 
 
 class Restaurant(User):
-    restaurant_name = models.CharField(max_length=30)
+    restaurant_name = models.CharField(max_length=30) # Should this be unique(??)
     address = models.CharField(max_length=200)
     price_range = models.PositiveSmallIntegerField(default=0)  # number of dollar signs
     category = models.CharField(max_length=30, default="unclassified")
@@ -46,7 +46,7 @@ class Reservation(models.Model):
     status = models.CharField(max_length=30)
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
 
-class Reviews(models.Model):
+class Review(models.Model):
     customer = models.ForeignKey(Customer)
     restaurant = models.ForeignKey(Restaurant)
     stars = models.PositiveSmallIntegerField(default=0) # number of stars 0-5
