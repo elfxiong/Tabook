@@ -27,4 +27,5 @@ urlpatterns = [
     url(r'^api/restaurants/update/$', update_restaurant),
     url(r'^api/restaurants/filter/$', filter_restaurant),
     url(r'^api/restaurants/table_status/$', table_status),
+    url(r'^api/tables/filter/$', filter_tables),
 ]

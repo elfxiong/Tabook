@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from .models import Customer, Restaurant
+from .models import Customer, Restaurant, Table
 
 
 class CustomerAPITestCase(TestCase):
@@ -144,3 +144,54 @@ class RestaurantAPITestCase(TestCase):
         response = self.factory.get('/api/restaurants/filter/', get_data)
         expected_json = {'result': [], 'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+
+class TableAPITestCase(TestCase):
+    def setUp(self):
+        self.factory = Client()
+        r1 = Restaurant.objects.create(username="lion", password="roar", email="roar@lion.zoo", phone="55555")
+        r2 = Restaurant.objects.create(username="cat", password="meow", email="meow@cat.zoo", phone="333")
+        Table.objects.create(restaurant=r1, capacity=4)
+        Table.objects.create(restaurant=r1, capacity=4)
+        Table.objects.create(restaurant=r1, capacity=3)
+        Table.objects.create(restaurant=r1, capacity=3)
+        Table.objects.create(restaurant=r1, capacity=3)
+
+        Table.objects.create(restaurant=r2, capacity=3)
+        Table.objects.create(restaurant=r2, capacity=3)
+        Table.objects.create(restaurant=r2, capacity=3)
+        Table.objects.create(restaurant=r2, capacity=2)
+        Table.objects.create(restaurant=r2, capacity=2)
+
+    def test_filter_table_1(self):
+        get_data = {'restaurant_id': 1}
+        response = self.factory.get('/api/tables/filter/', get_data)
+        # print(str(response.content, encoding='utf8'))
+        expected_data = {"success": True, "result": [
+            {"x_coordinate": None, "y_coordinate": None, "restaurant_id": 1, "capacity": 4, "id": 1,
+             "style": "unspecified"},
+            {"x_coordinate": None, "y_coordinate": None, "restaurant_id": 1, "capacity": 4, "id": 2,
+             "style": "unspecified"},
+            {"x_coordinate": None, "y_coordinate": None, "restaurant_id": 1, "capacity": 3, "id": 3,
+             "style": "unspecified"},
+            {"x_coordinate": None, "y_coordinate": None, "restaurant_id": 1, "capacity": 3, "id": 4,
+             "style": "unspecified"},
+            {"x_coordinate": None, "y_coordinate": None, "restaurant_id": 1, "capacity": 3, "id": 5,
+             "style": "unspecified"}]}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
+
+    def test_filter_table_2(self):
+        get_data = {'restaurant_id': 2}
+        response = self.factory.get('/api/tables/filter/', get_data)
+        expected_data = {"success": True, "result": [
+            {"style": "unspecified", "id": 6, "y_coordinate": None, "capacity": 3, "x_coordinate": None,
+             "restaurant_id": 2},
+            {"style": "unspecified", "id": 7, "y_coordinate": None, "capacity": 3, "x_coordinate": None,
+             "restaurant_id": 2},
+            {"style": "unspecified", "id": 8, "y_coordinate": None, "capacity": 3, "x_coordinate": None,
+             "restaurant_id": 2},
+            {"style": "unspecified", "id": 9, "y_coordinate": None, "capacity": 2, "x_coordinate": None,
+             "restaurant_id": 2},
+            {"style": "unspecified", "id": 10, "y_coordinate": None, "capacity": 2, "x_coordinate": None,
+             "restaurant_id": 2}]}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)

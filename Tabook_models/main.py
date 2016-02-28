@@ -4,6 +4,7 @@ from .models import *
 import urllib
 import json
 
+
 # customer
 
 
@@ -149,11 +150,25 @@ def table_status(request):
     if request.method != 'GET':
         content['result'] = "Invalid request method"
     else:
-        query_attrs = {'table_id' : request.GET['table_id'], 'date' : request.GET['date']}
+        query_attrs = {'table_id': request.GET['table_id'], 'date': request.GET['date']}
         status = TableStatus.objects.filter(**query_attrs)
         if status:
             content['result'] = {'table_status': status[0].available}
             content['success'] = True
         else:
             content['result'] = "Table not found"
+    return JsonResponse(content)
+
+
+def filter_tables(request):
+    content = {'success': False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method. Expected GET."
+    else:
+        parameters = ['id', 'restaurant_id']
+        query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
+        restaurants = Table.objects.filter(**query_attrs)
+        content['success'] = True
+        infos = ['id', 'restaurant_id', 'capacity', 'style', 'x_coordinate', 'y_coordinate']
+        content['result'] = [{field: getattr(r, field) for field in infos} for r in restaurants]
     return JsonResponse(content)
