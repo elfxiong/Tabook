@@ -8,7 +8,10 @@ from django.conf import settings
 
 
 def get_restaurant(request):
-    pass
+    url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
+    id = request.GET['id']
+    r = requests.get(url, params={'id': id})
+    return JsonResponse(r.json())
 
 
 def get_customer(request):

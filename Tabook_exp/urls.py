@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^restaurants/all/$', search_restaurant),
     url(r'^restaurants/table_status/$', get_table_status),
     url(r'^restaurants/recommendation/$', get_recommendations),
+    url(r'^restaurants/', get_restaurant),
 
 ]
