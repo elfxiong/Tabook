@@ -15,13 +15,11 @@ def get_customer(request):
     pass
 
 
-
-
-#given a table id and a date, return the availability of that table at that date time
+# given a table id and a date, return the availability of that table at that date time
 def get_table_status(request):
     table_id = request.GET['table_id']
     date = request.GET['date']
-    d = {'table_id':table_id, 'date':date}
+    d = {'table_id': table_id, 'date': date}
     request_url = settings.MODELS_LAYER_URL + "api/restaurants/table_status/"
     r = requests.get(request_url, params=d)
 
@@ -40,7 +38,10 @@ def search_restaurant(request):
 
 # generate recommendations nearby you
 def get_recommendations(request):
-    pass
+    url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
+    r = requests.get(url)
+    # print("rec: " + str(r.json()))
+    return JsonResponse(r.json())
 
 
 # get all tables by restaurant, date, time
