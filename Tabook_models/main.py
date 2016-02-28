@@ -54,7 +54,7 @@ def update_customer(request):
             content['result'] = "Customer not found"
         else:
             changed = []
-            for field_name in ['username', 'password', 'first_name', 'last_name','email', 'phone']:
+            for field_name in ['username', 'password', 'first_name', 'last_name', 'email', 'phone']:
                 if field_name in request.POST:
                     value = request.POST[field_name]
                     setattr(user, field_name, value)
@@ -71,7 +71,7 @@ def update_customer(request):
 def create_restaurant(request):
     content = {'success': False}
     if request.method != 'POST':
-        content['result'] = "Invalid request method"
+        content['result'] = "Invalid request method. Expected POST."
     else:
         form = RestaurantCreationForm(request.POST)
         if form.is_valid():
@@ -127,6 +127,7 @@ def update_restaurant(request):
     return JsonResponse(content)
 
 
+# filter restaurants and return a list of restaurants with info
 def filter_restaurant(request):
     content = {'success': False}
     if request.method != 'GET':
@@ -136,11 +137,12 @@ def filter_restaurant(request):
         query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
         restaurants = Restaurant.objects.filter(**query_attrs)
         content['success'] = True
-        content['result'] = [{'id': r.id, 'username': r.username} for r in restaurants]
+        infos = ['id', 'username', 'email', 'phone', 'address', 'restaurant_name']
+        content['result'] = [{field: getattr(r, field) for field in infos} for r in restaurants]
     return JsonResponse(content)
 
 
-#given a table and a date, return the availability of that table at that date time
+# given a table and a date, return the availability of that table at that date time
 def table_status(request):
     content = {'success': False}
     if request.method != 'GET':
@@ -151,4 +153,6 @@ def table_status(request):
         if status:
             content['result'] = {'table_status': status[0].available}
             content['success'] = True
+        else:
+            content['result'] = "Table not found"
     return JsonResponse(content)
