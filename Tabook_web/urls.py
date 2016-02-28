@@ -21,5 +21,6 @@ from . import main
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', main.homepage, name='homepage'),
-    url(r'^restaurants/(?P<id>\d+)/', main.restaurant_page, name='restaurant_page')
+    url(r'^restaurants/(?P<id>\d+)/', main.restaurant_page, name='restaurant_page'),
+    url(r'^restaurants/', main.restaurant_list, name='restaurant_list'),
 ]

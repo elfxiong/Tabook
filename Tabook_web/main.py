@@ -33,3 +33,12 @@ def restaurant_page(request, id):
         tables = data['result']
         context['tables'] = tables
     return render(request, 'restaurant.html', context)
+
+
+def restaurant_list(request):
+    context = {}
+    url = settings.EXP_LAYER_URL + "restaurants/all/"
+    data = requests.get(url).json()
+    # print(data.json())
+    context['restaurants'] = data['result']
+    return render(request, 'restaurants.html', context)
