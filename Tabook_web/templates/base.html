@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
 <head>
     <meta charset="UTF-8">
@@ -6,9 +7,9 @@
         {% block title %}{% endblock %}
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
-    <link rel="stylesheet" href="../static/assets/css/main.css"/>
-    <!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+    <!--[if lte IE 8]><script src="{% static "assets/js/ie/html5shiv.js" %}"></script><![endif]-->
+    <link rel="stylesheet" href="{% static "assets/css/main.css" %}"/>
+    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "assets/css/ie8.css" %}" /><![endif]-->
     {% block styles %}{% endblock %}
 </head>
 <body>
@@ -20,13 +21,13 @@
 {% endblock %}
 
 
-<script src="../static/assets/js/jquery.min.js"></script>
-<script src="../static/assets/js/jquery.dropotron.min.js"></script>
-<script src="../static/assets/js/skel.min.js"></script>
-<script src="../static/assets/js/skel-viewport.min.js"></script>
-<script src="../static/assets/js/util.js"></script>
-<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
-<script src="../static/assets/js/main.js"></script>
+<script src="{% static "assets/js/jquery.min.js" %}"></script>
+<script src="{% static "assets/js/jquery.dropotron.min.js" %}"></script>
+<script src="{% static "assets/js/skel.min.js" %}"></script>
+<script src="{% static "assets/js/skel-viewport.min.js" %}"></script>
+<script src="{% static "assets/js/util.js" %}"></script>
+<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js" %}"></script><![endif]-->
+<script src="{% static "assets/js/main.js" %}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
