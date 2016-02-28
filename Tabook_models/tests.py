@@ -23,12 +23,20 @@ class CustomerAPITestCase(TestCase):
 
     def test_get_customer_succeed_1(self):
         response = self.client.get('/api/customers/1/')
-        expected_json = {'id': 1, 'username': 'lion', 'email': 'roar@lion.zoo', 'phone': '55555', 'success': True}
+        expected_json = {'result': {'email': 'roar@lion.zoo',
+                                    'id': 1,
+                                    'phone': '55555',
+                                    'username': 'lion'},
+                         'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     def test_get_customer_succeed_2(self):
         response = self.client.get('/api/customers/2/')
-        expected_json = {'id': 2, 'username': 'cat', 'email': 'meow@cat.zoo', 'phone': '333', 'success': True}
+        expected_json = {'result': {'email': 'meow@cat.zoo',
+                                    'id': 2,
+                                    'phone': '333',
+                                    'username': 'cat'},
+                         'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     def test_get_customer_with_nonexistant_id(self):
@@ -49,7 +57,11 @@ class CustomerAPITestCase(TestCase):
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
         # see if the email field is updated
         response = self.client.get('/api/customers/1/')
-        expected_json = {'id': 1, 'username': 'lion', 'email': 'roar2@lion.zoo', 'phone': '55555', 'success': True}
+        expected_json = {'result': {'email': 'roar2@lion.zoo',
+                                    'id': 1,
+                                    'phone': '55555',
+                                    'username': 'lion'},
+                         'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
 
@@ -60,9 +72,9 @@ class RestaurantAPITestCase(TestCase):
         Restaurant.objects.create(username="cat", password="meow", email="meow@cat.zoo", phone="333")
 
     def test_create_restaurant(self):
-        post_data = {'username': 'myrestaurant', 'password': 'pas', 'restaurant_name': 'Tabook Restaurant', 'address': "123 lane", 'price_range': 1, 'category': 'Italian'}
-        data = str(post_data).encode('utf-8')
-        response = self.factory.post('/api/restaurants/create/', data)
+        post_data = {'username': 'myrestaurant', 'password': 'pas', 'restaurant_name': 'Tabook Restaurant',
+                     'address': "123 lane", 'price_range': 1, 'category': 'Italian'}
+        response = self.factory.post('/api/restaurants/create/', post_data)
         expected_data = {"success": True, 'id': 3}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
@@ -76,25 +88,55 @@ class RestaurantAPITestCase(TestCase):
         # expected to get all restaurants
         get_data = {}
         response = self.factory.get('/api/restaurants/filter/', get_data)
-        expected_json = {'result': [{'id': 1, 'username': 'lion'}, {'id': 2, 'username': 'cat'}], 'success': True}
+        expected_json = {'result': [{'address': '',
+                                     'email': 'roar@lion.zoo',
+                                     'id': 1,
+                                     'phone': '55555',
+                                     'restaurant_name': '',
+                                     'username': 'lion'},
+                                    {'address': '',
+                                     'email': 'meow@cat.zoo',
+                                     'id': 2,
+                                     'phone': '333',
+                                     'restaurant_name': '',
+                                     'username': 'cat'}],
+                         'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     def test_filter_restaurant_by_username(self):  # should be changed to something relevant to our app
         get_data = {'username': 'lion'}
         response = self.factory.get('/api/restaurants/filter/', get_data)
-        expected_json = {'result': [{'id': 1, 'username': 'lion'}], 'success': True}
+        expected_json = {'result': [{'address': '',
+                                     'email': 'roar@lion.zoo',
+                                     'id': 1,
+                                     'phone': '55555',
+                                     'restaurant_name': '',
+                                     'username': 'lion'}],
+                         'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     def test_filter_restaurant_by_phone(self):
         get_data = {'phone': '55555'}
         response = self.factory.get('/api/restaurants/filter/', get_data)
-        expected_json = {'result': [{'id': 1, 'username': 'lion'}], 'success': True}
+        expected_json = {'result': [{'address': '',
+                                     'email': 'roar@lion.zoo',
+                                     'id': 1,
+                                     'phone': '55555',
+                                     'restaurant_name': '',
+                                     'username': 'lion'}],
+                         'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     def test_filter_restaurant_by_email_and_phone(self):
         get_data = {'email': 'roar@lion.zoo', 'phone': '55555'}
         response = self.factory.get('/api/restaurants/filter/', get_data)
-        expected_json = {'result': [{'id': 1, 'username': 'lion'}], 'success': True}
+        expected_json = {'result': [{'address': '',
+                                     'email': 'roar@lion.zoo',
+                                     'id': 1,
+                                     'phone': '55555',
+                                     'restaurant_name': '',
+                                     'username': 'lion'}],
+                         'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
     def test_filter_restaurant_by_nonexistant_username(self):
