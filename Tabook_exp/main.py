@@ -12,13 +12,14 @@ def get_restaurant(request):
     r = requests.get(url, params={'id': id})
     return JsonResponse(r.json())
 
+
 def create_restaurant(request):
     content = {"success": False}
     if request.method != "POST":
         content["result"] = "GET Request Recieved. Expected POST."
     else:
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
-        response = requests.post(request_url, data = request.POST.dict())
+        response = requests.post(request_url, data=request.POST.dict())
         content = json.loads(response.content.decode('utf-8'))
         if not content['success']:
             # Models layer failed
@@ -31,12 +32,13 @@ def create_restaurant(request):
             return JsonResponse(error)
     return JsonResponse(content)
 
+
 def get_customer(request, id):
     content = {"success": False}
     if request.method != 'GET':
         content['result'] = "Invalid request method"
     else:
-        request_url = settings.MODELS_LAYER_URL + "api/customers/"+ id +"/"
+        request_url = settings.MODELS_LAYER_URL + "api/customers/" + id + "/"
         r = requests.get(request_url)
         return HttpResponse(r.text)
         r_dict = r.json()
@@ -47,6 +49,7 @@ def get_customer(request, id):
             content["result"] = r_dict["result"]
 
     return JsonResponse(content)
+
 
 # given a table id and a date, return the availability of that table at that date time
 def get_table_status(request):
@@ -77,8 +80,15 @@ def get_recommendations(request):
     return JsonResponse(r.json())
 
 
-# get all tables by restaurant, date, time
-def get_all_tables(request):
+# get all tables by restaurant
+def get_tables_by_restaurant_id(request, id):
+    url = settings.MODELS_LAYER_URL + "api/tables/filter/"
+    r = requests.get(url, params={'restaurant_id': id}).json()
+    return JsonResponse(r)
+
+
+# get tables by restaurant, date
+def filter_table(request):
     pass
 
 
