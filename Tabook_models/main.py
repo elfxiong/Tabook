@@ -32,8 +32,10 @@ def get_customer(request, id):
         except Customer.DoesNotExist:
             content["result"] = "Customer not found"
         else:
+            result = {}
             for field_name in ['id', 'username', 'email', 'phone']:
-                content[field_name] = getattr(user, field_name)
+                result[field_name] = getattr(user, field_name)
+            content[result] = result
             content["success"] = True
     return JsonResponse(content)
 
@@ -92,8 +94,10 @@ def get_restaurant(request, id):
         except Restaurant.DoesNotExist:
             content["result"] = "restaurant not found"
         else:
+            result = {}
             for field_name in ['id', 'username', 'email', 'phone']:
-                content[field_name] = getattr(user, field_name)
+                result[field_name] = getattr(user.field_name)
+            content[result] = result
             content["success"] = True
     return JsonResponse(content)
 
