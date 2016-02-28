@@ -13,10 +13,6 @@ def homepage(request):
     return render(request, 'index.html', context=context)
 
 
-def restaurant_details(request):
-    return render(request, 'left-sidebar.html')
-
-
 def restaurant_page(request, id):
     context = {}
     restaurant_id = id
@@ -25,4 +21,4 @@ def restaurant_page(request, id):
     restaurant = data.json()['result'][0]
     print(restaurant)
     context['restaurant'] = restaurant
-    return render(request, 'left-sidebar.html', context)
+    return render(request, 'restaurant.html', context)
