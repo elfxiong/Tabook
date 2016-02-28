@@ -30,7 +30,8 @@
                         <li><a href="#">Veroeros feugiat</a></li>
                     </ul>
                 </li>
-                <li class="{% active_page request "restaurant_page" %}"><a href="#">Restaurant</a></li>
+                <li class="{% active_page request "restaurant_page,restaurant_list" %}"><a
+                        href="{% url "restaurant_list" %}">Restaurant</a></li>
                 <li><a href="right-sidebar.html">Right Sidebar</a></li>
                 <li><a href="no-sidebar.html">No Sidebar</a></li>
             </ul>
