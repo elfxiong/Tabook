@@ -142,7 +142,7 @@ def filter_restaurant(request):
     return JsonResponse(content)
 
 
-#given a table and a date, return the availability of that table at that date time
+# given a table and a date, return the availability of that table at that date time
 def table_status(request):
     content = {'success': False}
     if request.method != 'GET':
@@ -153,4 +153,6 @@ def table_status(request):
         if status:
             content['result'] = {'table_status': status[0].available}
             content['success'] = True
+        else:
+            content['result'] = "Table not found"
     return JsonResponse(content)
