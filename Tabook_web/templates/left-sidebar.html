@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block title %}
-    Detail Page
+    {{ restaurant.resturant_name }}
 {% endblock %}
+{% load staticfiles %}
 {% block content %}
     <!-- Main -->
     <div id="main-wrapper">
@@ -11,7 +12,7 @@
 
                     <!-- Sidebar -->
                     <section class="box">
-                        <a href="#" class="image featured"><img src="../static/images/pic09.jpg" alt=""/></a>
+                        <a href="#" class="image featured"><img src="{% static "images/pic09.jpg" %}" alt=""/></a>
                         <header>
                             <h3>Sed etiam lorem nulla</h3>
                         </header>
@@ -45,7 +46,7 @@
                     <article class="box post">
                         <a href="#" class="image featured"><img src="../static/images/pic01.jpg" alt=""/></a>
                         <header>
-                            <h2>Left Sidebar</h2>
+                            <h2>{{ restaurant.restaurant_name }}</h2>
                             <p>Lorem ipsum dolor sit amet feugiat</p>
                         </header>
                         <p>

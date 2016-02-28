@@ -15,3 +15,14 @@ def homepage(request):
 
 def restaurant_details(request):
     return render(request, 'left-sidebar.html')
+
+
+def restaurant_page(request, id):
+    context = {}
+    restaurant_id = id
+    url = settings.EXP_LAYER_URL + "restaurants/"
+    data = requests.get(url, params={'id': restaurant_id})
+    restaurant = data.json()['result'][0]
+    print(restaurant)
+    context['restaurant'] = restaurant
+    return render(request, 'left-sidebar.html', context)

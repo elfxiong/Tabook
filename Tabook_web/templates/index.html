@@ -29,11 +29,14 @@
                                         <header>
                                             <h3>{{ restaurant.restaurant_name }}</h3>
                                         </header>
+{#                                        <p>{{ restaurant.category }}</p>#}
+{#                                        <p>{{ restaurant.price_range }}</p>#}
+                                        <p>{{ restaurant.address }}</p>
                                         <p>Lorem ipsum dolor sit amet sit veroeros sed amet blandit consequat veroeros
                                             lorem blandit adipiscing et feugiat phasellus tempus dolore ipsum lorem
                                             dolore.</p>
                                         <footer>
-                                            <a href="#" class="button alt">Find out more</a>
+                                            <a href="{% url "restaurant_page" restaurant.id %}" class="button alt">Find out more</a>
                                         </footer>
                                     </section>
                                 </div>
