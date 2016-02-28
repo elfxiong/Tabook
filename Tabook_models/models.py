@@ -45,3 +45,12 @@ class Reservation(models.Model):
     table_status = models.ForeignKey(TableStatus)
     status = models.CharField(max_length=30)
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
+
+class Reviews(models.Model):
+    customer = models.ForeignKey(Customer)
+    restaurant = models.ForeignKey(Restaurant)
+    stars = models.PositiveSmallIntegerField(default=0) # number of stars 0-5
+    text = models.CharField(max_length=2000)
+    created = models.DateTimeField(auto_created=True, auto_now_add=True)
+
+
