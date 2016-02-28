@@ -11,7 +11,7 @@ import json
 def create_customer(request):
     content = {'success': False}
     if request.method != 'POST':
-        content['result'] = "Invalid request method"
+        content['result'] = "Invalid request method. Expected POST."
     else:
         form = CustomerCreationForm(request.POST)
         if form.is_valid():
@@ -27,7 +27,7 @@ def create_customer(request):
 def get_customer(request, id):
     content = {"success": False}
     if request.method != 'GET':
-        content['result'] = "Invalid request method"
+        content['result'] = "Invalid request method. Expected GET."
     else:
         try:
             user = Customer.objects.get(pk=id)
@@ -45,7 +45,7 @@ def get_customer(request, id):
 def update_customer(request):
     content = {'success': False}
     if request.method != "POST":
-        content['result'] = "Invalid request method"
+        content['result'] = "Invalid request method. Expected POST."
     elif 'id' not in request.POST:
         content['result'] = "Customer id not provided"
     else:
@@ -89,7 +89,7 @@ def create_restaurant(request):
 def get_restaurant(request, id):
     content = {"success": False}
     if request.method != 'GET':
-        content['result'] = "Invalid request method"
+        content['result'] = "Invalid request method. Expected GET."
     else:
         try:
             user = Restaurant.objects.get(pk=id)
@@ -98,7 +98,7 @@ def get_restaurant(request, id):
         else:
             result = {}
             for field_name in ['id', 'username', 'email', 'phone']:
-                result[field_name] = getattr(user.field_name)
+                result[field_name] = getattr(user, field_name)
             content[result] = result
             content["success"] = True
     return JsonResponse(content)
@@ -107,7 +107,7 @@ def get_restaurant(request, id):
 def update_restaurant(request):
     content = {'success': False}
     if request.method != "POST":
-        content['result'] = "Invalid request method"
+        content['result'] = "Invalid request method. Expected POST."
     elif 'id' not in request.POST:
         content['result'] = "Restaurant id not provided"
     else:
@@ -133,14 +133,14 @@ def update_restaurant(request):
 def filter_restaurant(request):
     content = {'success': False}
     if request.method != 'GET':
-        content['result'] = "Invalid request method"
+        content['result'] = "Invalid request method. Expected GET."
     else:
         parameters = ['id', 'username', 'email', 'phone']
         query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
         restaurants = Restaurant.objects.filter(**query_attrs)
         content['success'] = True
-        infos = ['id', 'username', 'email', 'phone', 'address', 'restaurant_name']
-        content['result'] = [{field: getattr(r, field) for field in infos} for r in restaurants]
+        info = ['id', 'username', 'email', 'phone', 'address', 'restaurant_name']
+        content['result'] = [{field: getattr(r, field) for field in info} for r in restaurants]
     return JsonResponse(content)
 
 
@@ -148,7 +148,7 @@ def filter_restaurant(request):
 def table_status(request):
     content = {'success': False}
     if request.method != 'GET':
-        content['result'] = "Invalid request method"
+        content['result'] = "Invalid request method. Expected GET."
     else:
         query_attrs = {'table_id': request.GET['table_id'], 'date': request.GET['date']}
         status = TableStatus.objects.filter(**query_attrs)
@@ -156,7 +156,7 @@ def table_status(request):
             content['result'] = {'table_status': status[0].available}
             content['success'] = True
         else:
-            content['result'] = "Table not found"
+            content['result'] = "Table not found."
     return JsonResponse(content)
 
 
@@ -169,8 +169,8 @@ def filter_tables(request):
         query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
         restaurants = Table.objects.filter(**query_attrs)
         content['success'] = True
-        infos = ['id', 'restaurant_id', 'capacity', 'style', 'x_coordinate', 'y_coordinate']
-        content['result'] = [{field: getattr(r, field) for field in infos} for r in restaurants]
+        info = ['id', 'restaurant_id', 'capacity', 'style', 'x_coordinate', 'y_coordinate']
+        content['result'] = [{field: getattr(r, field) for field in info} for r in restaurants]
     return JsonResponse(content)
 
 def create_review(request):
