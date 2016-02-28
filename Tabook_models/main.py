@@ -1,7 +1,8 @@
 from Tabook_models.forms import CustomerCreationForm, RestaurantCreationForm
 from django.http import JsonResponse
 from .models import *
-
+import urllib
+import json
 
 # customer
 
@@ -73,7 +74,7 @@ def create_restaurant(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        form = RestaurantCreationForm(request.POST)
+        form = RestaurantCreationForm(request.POST.dict())
         if form.is_valid():
             restaurant = form.save()
             content['success'] = True

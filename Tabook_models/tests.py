@@ -60,8 +60,9 @@ class RestaurantAPITestCase(TestCase):
         Restaurant.objects.create(username="cat", password="meow", email="meow@cat.zoo", phone="333")
 
     def test_create_restaurant(self):
-        post_data = {'username': 'myrestaurant', 'password': 'pas', 'restaurant_name': 'Tabook Restaurant', 'address': ["123 lane"], 'price_range': 1, 'category': 'Italian'}
-        response = self.factory.post('/api/restaurants/create/', post_data)
+        post_data = {'username': 'myrestaurant', 'password': 'pas', 'restaurant_name': 'Tabook Restaurant', 'address': "123 lane", 'price_range': 1, 'category': 'Italian'}
+        data = str(post_data).encode('utf-8')
+        response = self.factory.post('/api/restaurants/create/', data)
         expected_data = {"success": True, 'id': 3}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
