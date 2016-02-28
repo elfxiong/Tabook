@@ -36,7 +36,8 @@ class Table(models.Model):
 
 class TableStatus(models.Model):  # name TBD
     table = models.ForeignKey(Table)
-    date = models.DateTimeField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
     available = models.BooleanField(default=False)
 
 
