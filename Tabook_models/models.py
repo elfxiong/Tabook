@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import datetime
 
 class User(models.Model):
     username = models.CharField(max_length=40)  # need setter
@@ -22,10 +22,26 @@ class Customer(User):
 class Restaurant(User):
     restaurant_name = models.CharField(max_length=30) # Should this be unique(??)
     address = models.CharField(max_length=200)
-    hours = models.ForeignKey(RestaurantHours)
     price_range = models.PositiveSmallIntegerField(default=0)  # number of dollar signs
     category = models.CharField(max_length=30, default="unclassified")
 
+
+class RestaurantHours(models.Model):
+    restaurant = models.ForeignKey(Restaurant)
+    monday_open_time = models.TimeField(default='0:00')
+    monday_close_time = models.TimeField(default='23:59')
+    tuesday_open_time = models.TimeField(default='0:00')
+    tuesday_close_time = models.TimeField(default='23:59')
+    wednesday_open_time = models.TimeField(default='0:00')
+    wednesday_close_time = models.TimeField(default='23:59')
+    thursday_open_time = models.TimeField(default='0:00')
+    thursday_close_time = models.TimeField(default='23:59')
+    friday_open_time = models.TimeField(default='0:00')
+    friday_close_time = models.TimeField(default='23:59')
+    saturday_open_time = models.TimeField(default='0:00')
+    saturday_close_time = models.TimeField(default='23:59')
+    sunday_open_time = models.TimeField(default='0:00')
+    sunday_close_time = models.TimeField(default='23:59')
 
 class Table(models.Model):
     restaurant = models.ForeignKey(Restaurant)
@@ -39,26 +55,8 @@ class Reservation(models.Model):
     customer = models.ForeignKey(Customer)
     status = models.CharField(max_length=30) # possible values ???
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
-    start_time = models.DateTimeField()
-    duration = models.TimeField()
-
-
-class RestaurantHours(models.Model):
-    monday_open_time = models.TimeField()
-    monday_close_time = models.TimeField()
-    tuesday_open_time = models.TimeField()
-    tuesday_close_time = models.TimeField()
-    wednesday_open_time = models.TimeField()
-    wednesday_close_time = models.TimeField()
-    thursday_open_time = models.TimeField()
-    thursday_close_time = models.TimeField()
-    friday_open_time = models.TimeField()
-    friday_close_time = models.TimeField()
-    saturday_open_time = models.TimeField()
-    saturday_close_time = models.TimeField()
-    sunday_open_time = models.TimeField()
-    sunday_close_time = models.TimeField()
-
+    start_time = models.DateTimeField(default=datetime.now, blank=True)
+    duration = models.PositiveSmallIntegerField(default=1)  # number of minutes
 
 class Review(models.Model):
     customer = models.ForeignKey(Customer)

@@ -182,7 +182,6 @@ def get_reviews(request):
         query_attrs = {'id' : request.GET['restaurant_id']}
         restaurant = Restaurant.objects.get(**query_attrs)
         reviews = Review.objects.filter(restaurant=restaurant)
-        print(reviews)
         if reviews:
             infos = ['id', 'stars', 'text', 'created']
             for r in reviews:

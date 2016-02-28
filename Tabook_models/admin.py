@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Customer, Restaurant, Table, TableStatus, Reservation
+from .models import User, Customer, Restaurant, Table, Reservation
 
 
 @admin.register(Customer)
@@ -15,12 +15,6 @@ class RestaurantAdmin(admin.ModelAdmin):
 @admin.register(Table)
 class RestaurantAdmin(admin.ModelAdmin):
     pass
-
-
-@admin.register(TableStatus)
-class RestaurantAdmin(admin.ModelAdmin):
-    pass
-
 
 @admin.register(Reservation)
 class RestaurantAdmin(admin.ModelAdmin):
