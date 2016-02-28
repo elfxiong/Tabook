@@ -35,7 +35,7 @@ def get_customer(request, id):
             result = {}
             for field_name in ['id', 'username', 'email', 'phone']:
                 result[field_name] = getattr(user, field_name)
-            content[result] = result
+            content['result'] = result
             content["success"] = True
     return JsonResponse(content)
 
