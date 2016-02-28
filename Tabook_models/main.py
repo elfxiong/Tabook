@@ -143,23 +143,6 @@ def filter_restaurant(request):
         content['result'] = [{field: getattr(r, field) for field in info} for r in restaurants]
     return JsonResponse(content)
 
-
-# given a table and a date, return the availability of that table at that date time
-def table_status(request):
-    content = {'success': False}
-    if request.method != 'GET':
-        content['result'] = "Invalid request method. Expected GET."
-    else:
-        query_attrs = {'table_id': request.GET['table_id'], 'date': request.GET['date']}
-        status = TableStatus.objects.filter(**query_attrs)
-        if status:
-            content['result'] = {'table_status': status[0].available}
-            content['success'] = True
-        else:
-            content['result'] = "Table not found."
-    return JsonResponse(content)
-
-
 def filter_tables(request):
     content = {'success': False}
     if request.method != 'GET':
@@ -204,7 +187,7 @@ def get_reviews(request):
             infos = ['id', 'stars', 'text', 'created']
             for r in reviews:
                 fields = {field: getattr(r, field) for field in infos}
-                fields['customer_id'] = r.customer.id
+                fields['customer_id'] = r.customer.id           # TODO: fixNote: returns id, not customer data
                 content['result'] = [fields]
             content['success'] = True
         else:

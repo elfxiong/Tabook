@@ -22,6 +22,7 @@ class Customer(User):
 class Restaurant(User):
     restaurant_name = models.CharField(max_length=30) # Should this be unique(??)
     address = models.CharField(max_length=200)
+    hours = models.ForeignKey(RestaurantHours)
     price_range = models.PositiveSmallIntegerField(default=0)  # number of dollar signs
     category = models.CharField(max_length=30, default="unclassified")
 
@@ -34,18 +35,30 @@ class Table(models.Model):
     y_coordinate = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)  # XXXXX.XX
 
 
-class TableStatus(models.Model):  # name TBD
-    table = models.ForeignKey(Table)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    available = models.BooleanField(default=False)
-
-
 class Reservation(models.Model):
     customer = models.ForeignKey(Customer)
-    table_status = models.ForeignKey(TableStatus)
-    status = models.CharField(max_length=30)
+    status = models.CharField(max_length=30) # possible values ???
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
+    start_time = models.DateTimeField()
+    duration = models.TimeField()
+
+
+class RestaurantHours(models.Model):
+    monday_open_time = models.TimeField()
+    monday_close_time = models.TimeField()
+    tuesday_open_time = models.TimeField()
+    tuesday_close_time = models.TimeField()
+    wednesday_open_time = models.TimeField()
+    wednesday_close_time = models.TimeField()
+    thursday_open_time = models.TimeField()
+    thursday_close_time = models.TimeField()
+    friday_open_time = models.TimeField()
+    friday_close_time = models.TimeField()
+    saturday_open_time = models.TimeField()
+    saturday_close_time = models.TimeField()
+    sunday_open_time = models.TimeField()
+    sunday_close_time = models.TimeField()
+
 
 class Review(models.Model):
     customer = models.ForeignKey(Customer)
