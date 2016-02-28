@@ -6,29 +6,11 @@ from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 
 
-def get_restaurant(request, id):
-    content = {"success": False}
-    if request.method != "GET":
-        content["result"] = "POST Request Recieved. Expected GET."
-    else:
-        id = id
-        # Sanitize ID
-        request_url = settings.MODELS_LAYER_URL + "api/restaurants/" + id + "/"
-        req = urllib.request.Request(request_url, method='GET')
-        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-        content = json.loads(resp_json)
-        if not content['success']:
-            # Models layer failed
-            error = {}
-            if content['result'] == "Invalid request method":
-                error["type"] = "POST Request Recieved. Expected GET."
-                return json.loads(error)
-
-            if content["result"] == "Restaurant not found":
-                error["type"] = "The requested restaurant was not found."
-            return JsonResponse(error)
-    return JsonResponse(content)
-
+def get_restaurant(request):
+    url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
+    id = request.GET['id']
+    r = requests.get(url, params={'id': id})
+    return JsonResponse(r.json())
 
 def create_restaurant(request):
     content = {"success": False}
@@ -49,11 +31,22 @@ def create_restaurant(request):
             return JsonResponse(error)
     return JsonResponse(content)
 
+def get_customer(request, id):
+    content = {"success": False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method"
+    else:
+        request_url = settings.MODELS_LAYER_URL + "api/customers/"+ id +"/"
+        r = requests.get(request_url)
+        return HttpResponse(r.text)
+        r_dict = r.json()
+        if not r_dict['success']:
+            content['result'] = "Error from the model layer."
+        else:
+            content["success"] = True
+            content["result"] = r_dict["result"]
 
-
-def get_customer(request):
-    pass
-
+    return JsonResponse(content)
 
 # given a table id and a date, return the availability of that table at that date time
 def get_table_status(request):
