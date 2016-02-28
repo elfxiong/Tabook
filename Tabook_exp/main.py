@@ -11,9 +11,22 @@ def get_restaurant(request):
     pass
 
 
-def get_customer(request):
-    pass
+def get_customer(request, id):
+    content = {"success": False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method"
+    else:
+        request_url = settings.MODELS_LAYER_URL + "api/customers/"+ id +"/"
+        r = requests.get(request_url)
+        return HttpResponse(r.text)
+        r_dict = r.json()
+        if not r_dict['success']:
+            content['result'] = "Error from the model layer."
+        else:
+            content["success"] = True
+            content["result"] = r_dict["result"]
 
+    return JsonResponse(content)
 
 
 
