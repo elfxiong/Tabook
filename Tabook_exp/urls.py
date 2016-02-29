@@ -24,7 +24,10 @@ urlpatterns = [
     url(r'^restaurants/create/$', create_restaurant),
     url(r'^restaurants/table_status/$', get_table_status),
     url(r'^restaurants/recommendation/$', get_recommendations),
-    url(r'^restaurants/', get_restaurant),
+    url(r'^restaurants/$', get_restaurant),
+    url(r'^restaurants/featured/$', get_featured),
     url(r'^customers/get_customer/(?P<id>\d+)/$', get_customer),
     url(r'^tables_by_restaurant_id/(?P<id>\d+)/$', get_tables_by_restaurant_id),
+
+
 ]

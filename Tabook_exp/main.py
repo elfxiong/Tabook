@@ -80,6 +80,18 @@ def get_recommendations(request):
     return JsonResponse(r.json())
 
 
+#get featured restaurants with highest rating, for now it shows all restaurants
+def get_featured(request):
+    url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
+    r = requests.get(url).json()
+    rest_list = r['result']
+    if len(rest_list) > 2:
+        rest_list = rest_list[:2]
+        r['result'] = rest_list
+    return JsonResponse(r)
+
+
+
 # get all tables by restaurant
 def get_tables_by_restaurant_id(request, id):
     url = settings.MODELS_LAYER_URL + "api/tables/filter/"
