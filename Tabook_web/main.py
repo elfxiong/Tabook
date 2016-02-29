@@ -1,6 +1,7 @@
 import requests
 from django.conf import settings
 from django.shortcuts import render
+from django.http import HttpResponse
 
 
 def homepage(request):
@@ -10,7 +11,16 @@ def homepage(request):
     data = requests.get(url)
     # print(data.json())
     context['recommended_restaurants'] = data.json()['result']
+
+    # get featured restaurant
+    url = settings.EXP_LAYER_URL + "restaurants/featured/"
+    data = requests.get(url).json()
+    context['featured_restaurants'] = data['result']
+
+
     return render(request, 'index.html', context=context)
+
+
 
 
 def restaurant_page(request, id):

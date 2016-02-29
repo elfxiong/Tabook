@@ -120,4 +120,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # layers
-EXP_LAYER_URL = "http://0.0.0.0:8001/"
+EXP_LAYER_URL = "http://exp-api:8000/"
