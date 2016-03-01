@@ -1,0 +1,38 @@
+CS4501 - ISA project
+TableBooking (Tabook) - by Qian Xiong and Yixuan Nie
+
+
+Resaurant to Table: one to many
+Table to TableStatus: one to many
+Table to Reservation: one to many
+Customer to Reservation: one to many
+
+
+User:
+	username
+	password
+	email
+	phone
+
+Customer, extending User:
+	first_name
+	last_name
+
+Restaurant, extending User:
+	restaurant_name
+	address
+
+Table:
+	restaurant
+	capacity
+
+TableStatus:
+	table
+	date
+	available
+
+Reservation:
+	customer
+	table_status
+	status
+	created
