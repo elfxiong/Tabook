@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}{% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!--[if lte IE 8]><script src="{% static "assets/js/ie/html5shiv.js" %}"></script><![endif]-->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "assets/css/main.css" %}"/>
+    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "assets/css/ie8.css" %}" /><![endif]-->
+    {% block styles %}{% endblock %}
+</head>
+<body>
+<div id="page-wrapper">
+    {% include "header.html" %}
+    {% block content %}
+    {% endblock %}
+    {% include "footer.html" %}
+</div>
+
+<script src="{% static "assets/js/jquery.min.js" %}"></script>
+<script src="{% static "assets/js/jquery.dropotron.min.js" %}"></script>
+<script src="{% static "assets/js/skel.min.js" %}"></script>
+<script src="{% static "assets/js/skel-viewport.min.js" %}"></script>
+<script src="{% static "assets/js/util.js" %}"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js" %}"></script><![endif]-->
+<script src="{% static "assets/js/main.js" %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
