@@ -1,6 +1,15 @@
 from django.db import models
 from datetime import datetime
 
+
+class Authenticator(models.Model):
+    type_choices = (('C', 'Customer'), ('R', 'Restaurant'))
+    user_type = models.CharField(max_length=2, choices = type_choices, default='C')
+    user_id = models.PositiveIntegerField()
+    authenticator = models.CharField()
+    date_created = models.DateTimeField(auto_created=True, auto_now_add=True)
+
+    
 class User(models.Model):
     username = models.CharField(max_length=40)  # need setter
     password = models.CharField(max_length=128)  # need setter
