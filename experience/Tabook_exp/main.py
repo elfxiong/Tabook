@@ -151,3 +151,17 @@ def login(request):
         else:
             content['result'] = r['result']
     return JsonResponse(content)
+
+
+# a helper method that checks the authenticator and gets user type (anonymous/customer/restaurant)
+# will be used by views that render different content for different types of user
+def get_user_type(token):
+    url = settings.MODELS_LAYER_URL + "api/auth/authenticator/check/"
+    params = {'authenticator': token}
+    r = requests.get(url, params).json()
+    if r['success']:
+        return r['user']['type']
+    else:
+        # this method is incorrect or the API has changed
+        raise Warning
+        # return None
