@@ -202,7 +202,7 @@ def check_authenticator(request):
         content['result'] = "Invalid request method. Expected GET."
     else:
         content['success'] = True
-        token = request.POST['authenticator']
+        token = request.GET['authenticator']
         authenticator = Authenticator.objects.filter(token=token).first()
         if authenticator:
             content['user'] = {'type': authenticator.user_type, 'id': authenticator.user_id}

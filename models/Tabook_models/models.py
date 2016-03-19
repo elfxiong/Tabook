@@ -32,7 +32,7 @@ class User(models.Model):
     phone = models.CharField(max_length=20, null=True, blank=True)  # need setter
 
     def __str__(self):
-        return str(self.id) + " " + self.username
+        return str(self.id) + " " + str(self.username)
 
     class Meta:
         abstract = True
