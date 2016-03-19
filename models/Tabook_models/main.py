@@ -1,9 +1,4 @@
-import os
-
-import hmac
-
 from Tabook_models.forms import CustomerCreationForm, RestaurantCreationForm, ReviewCreationForm
-from django.conf import settings
 from django.http import JsonResponse
 from .models import *
 
@@ -227,9 +222,7 @@ def login(request):
 
         cus = Customer.objects.filter(username=username, password=password).first()
         if cus:
-            token = hmac.new(key=settings.SECRET_KEY.encode('utf-8'), msg=os.urandom(32),
-                             digestmod='sha256').hexdigest()
-            authenticator = Authenticator.objects.create(token=token, user_id=cus.id,
+            authenticator = Authenticator.objects.create(user_id=cus.id,
                                                          user_type=Authenticator.CUSTOMER)
             content['success'] = True
             content['auth'] = authenticator.token
@@ -238,9 +231,7 @@ def login(request):
         else:
             res = Restaurant.objects.filter(username=username, password=password).first()
             if res:
-                token = hmac.new(key=settings.SECRET_KEY.encode('utf-8'), msg=os.urandom(32),
-                                 digestmod='sha256').hexdigest()
-                authenticator = Authenticator.objects.create(token=token, user_id=res.id,
+                authenticator = Authenticator.objects.create(user_id=res.id,
                                                              user_type=Authenticator.CUSTOMER)
                 content['success'] = True
                 content['auth'] = authenticator.token

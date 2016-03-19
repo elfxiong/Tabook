@@ -1,3 +1,8 @@
+import os
+
+import hmac
+from django.conf import settings
+
 from django.db import models
 from datetime import datetime
 
@@ -8,8 +13,16 @@ class Authenticator(models.Model):
     USER_TYPE_CHOICES = ((CUSTOMER, 'Customer'), (RESTAURANT, 'Restaurant'))
     user_type = models.CharField(max_length=2, choices=USER_TYPE_CHOICES, default='C')
     user_id = models.PositiveIntegerField()
-    token = models.CharField()
+    token = models.CharField(primary_key=True)
     date_created = models.DateTimeField(auto_created=True, auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        while not self.token:
+            token = hmac.new(key=settings.SECRET_KEY.encode('utf-8'), msg=os.urandom(32),
+                             digestmod='sha256').hexdigest()
+            if not self.objects.filter(pk=token).count():
+                self.token = token
+        super(Authenticator, self).save(*args, **kwargs)
 
 
 class User(models.Model):
