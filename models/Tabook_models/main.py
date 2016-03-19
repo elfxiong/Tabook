@@ -1,8 +1,11 @@
+import os
+
+import hmac
+
 from Tabook_models.forms import CustomerCreationForm, RestaurantCreationForm, ReviewCreationForm
+from django.conf import settings
 from django.http import JsonResponse
 from .models import *
-import urllib
-import json
 
 
 # customer
@@ -143,6 +146,7 @@ def filter_restaurant(request):
         content['result'] = [{field: getattr(r, field) for field in info} for r in restaurants]
     return JsonResponse(content)
 
+
 def filter_tables(request):
     content = {'success': False}
     if request.method != 'GET':
@@ -156,15 +160,16 @@ def filter_tables(request):
         content['result'] = [{field: getattr(r, field) for field in info} for r in restaurants]
     return JsonResponse(content)
 
+
 def create_review(request):
     content = {'success': False}
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
         form = ReviewCreationForm({'restaurant': request.POST['restaurant_id'],
-                                   'customer'  : request.POST['customer_id'],
-                                   'stars'     : request.POST['stars'],
-                                   'text'      : request.POST['text']})
+                                   'customer': request.POST['customer_id'],
+                                   'stars': request.POST['stars'],
+                                   'text': request.POST['text']})
         if form.is_valid():
             review = form.save()
             content['success'] = True
@@ -174,21 +179,60 @@ def create_review(request):
             content['html'] = form.errors
     return JsonResponse(content)
 
+
 def get_reviews(request):
     content = {'success': False}
     if request.method != 'GET':
         content['result'] = "Invalid request method"
     else:
-        query_attrs = {'id' : request.GET['restaurant_id']}
+        query_attrs = {'id': request.GET['restaurant_id']}
         restaurant = Restaurant.objects.get(**query_attrs)
         reviews = Review.objects.filter(restaurant=restaurant)
         if reviews:
             infos = ['id', 'stars', 'text', 'created']
             for r in reviews:
                 fields = {field: getattr(r, field) for field in infos}
-                fields['customer_id'] = r.customer.id           # TODO: fixNote: returns id, not customer data
+                fields['customer_id'] = r.customer.id  # TODO: fixNote: returns id, not customer data
                 content['result'] = [fields]
             content['success'] = True
         else:
             content['result'] = "No reviews found."
+    return JsonResponse(content)
+
+
+def check_authenticator(request):
+    # check if the authenticator is valid
+    return False
+
+
+def login(request):
+    content = {'success': False}
+    # check user name and password
+    if request.method != 'POST':
+        content['result'] = "Invalid request method. Expected POST."
+    else:
+        username = request.POST['username']
+        password = request.POST['password']
+
+        cus = Customer.objects.filter(username=username, password=password).first()
+        if cus:
+            token = hmac.new(key=settings.SECRET_KEY.encode('utf-8'), msg=os.urandom(32),
+                             digestmod='sha256').hexdigest()
+            authenticator = Authenticator.objects.create(token=token, user_id=cus.id,
+                                                         user_type=Authenticator.CUSTOMER)
+            content['success'] = True
+            content['auth'] = authenticator.token
+            return JsonResponse(content)
+
+        else:
+            res = Restaurant.objects.filter(username=username, password=password).first()
+            if res:
+                token = hmac.new(key=settings.SECRET_KEY.encode('utf-8'), msg=os.urandom(32),
+                                 digestmod='sha256').hexdigest()
+                authenticator = Authenticator.objects.create(token=token, user_id=res.id,
+                                                             user_type=Authenticator.CUSTOMER)
+                content['success'] = True
+                content['auth'] = authenticator.token
+                return JsonResponse(content)
+
     return JsonResponse(content)

@@ -19,6 +19,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^auth/login/$', login),
     url(r'^api/customers/create/$', create_customer),
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),
     url(r'^api/customers/update/$', update_customer),
