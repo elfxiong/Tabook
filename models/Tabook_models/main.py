@@ -200,9 +200,20 @@ def get_reviews(request):
     return JsonResponse(content)
 
 
+# check if the authenticator is valid, and return the user type (customer, restaurant, or anonymous)
 def check_authenticator(request):
-    # check if the authenticator is valid
-    return False
+    content = {'success': False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method. Expected GET."
+    else:
+        content['success'] = True
+        token = request.POST['authenticator']
+        authenticator = Authenticator.objects.filter(token=token).first()
+        if authenticator:
+            content['user'] = {'type': authenticator.user_type, 'id': authenticator.user_id}
+        else:
+            content['user'] = {'type': 'anonymous'}
+    return JsonResponse(content)
 
 
 def login(request):
