@@ -1,5 +1,4 @@
 import json
-from urllib.parse import urlencode
 import urllib.request
 import requests
 from django.http import JsonResponse, HttpResponse
@@ -80,7 +79,7 @@ def get_recommendations(request):
     return JsonResponse(r.json())
 
 
-#get featured restaurants with highest rating, for now it shows all restaurants
+# get featured restaurants with highest rating, for now it shows all restaurants
 def get_featured(request):
     url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
     r = requests.get(url).json()
@@ -89,7 +88,6 @@ def get_featured(request):
         rest_list = rest_list[:2]
         r['result'] = rest_list
     return JsonResponse(r)
-
 
 
 # get all tables by restaurant
@@ -137,3 +135,19 @@ def get_background_image(request):
 # might not need this one for project 3
 def sort_by_preference(request):
     pass
+
+
+def login(request):
+    content = {'success': False}
+    if request.method != 'POST':
+        content['result'] = "Invalid request method. Expected POST."
+    else:
+        url = settings.MODELS_LAYER_URL + "api/auth/login/"
+        data = {'password': request.POST['password'], 'username': request.POST['username']}
+        r = requests.post(url, data).json()
+        if r['success']:
+            content['success'] = True
+            content['auth'] = content['auth']
+        else:
+            content['result'] = r['result']
+    return JsonResponse(content)

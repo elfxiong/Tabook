@@ -19,6 +19,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^auth/login/$', login),
     url(r'^restaurants/all/$', search_restaurant),
     url(r'^restaurants/(?P<id>\d+)/$', get_restaurant),
     url(r'^restaurants/create/$', create_restaurant),
@@ -28,6 +29,5 @@ urlpatterns = [
     url(r'^restaurants/featured/$', get_featured),
     url(r'^customers/get_customer/(?P<id>\d+)/$', get_customer),
     url(r'^tables_by_restaurant_id/(?P<id>\d+)/$', get_tables_by_restaurant_id),
-
 
 ]

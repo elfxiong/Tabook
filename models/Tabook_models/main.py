@@ -236,5 +236,5 @@ def login(request):
                 content['success'] = True
                 content['auth'] = authenticator.token
                 return JsonResponse(content)
-
+        content['result'] = "Invalid username name or password."
     return JsonResponse(content)
