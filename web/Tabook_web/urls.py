@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^restaurants/', main.restaurant_list, name='restaurant_list'),
     url(r'^login/', main.login_page, name='login_page'),
     url(r'^signup/', main.signup_page, name='signup_page'),
+    url(r'^logout/',main.logout,name='logout'),
 ]

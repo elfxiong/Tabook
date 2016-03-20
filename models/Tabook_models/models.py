@@ -8,7 +8,6 @@ from datetime import datetime
 from django.contrib.auth import hashers
 
 
-
 class Authenticator(models.Model):
     CUSTOMER = "C"
     RESTAURANT = "R"
@@ -45,15 +44,14 @@ class Customer(User):
     last_name = models.CharField(max_length=30, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        #salt?
+        # salt?
         print("saving")
         hashed_password = hashers.make_password(self.password)
         self.password = hashed_password
-        print("saved: " +hashed_password)
+        print("saved: " + hashed_password)
 
         super(Customer, self).save(*args, **kwargs)
         print("saved successfully")
-
 
 
 class Restaurant(User):
@@ -63,15 +61,10 @@ class Restaurant(User):
     category = models.CharField(max_length=30, default="unclassified", null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        #salt?
-        print("saving")
+
         hashed_password = hashers.make_password(self.password)
         self.password = hashed_password
-        print("saved: " +hashed_password)
-        print("args",*args)
-        print("kwargs",**kwargs)
         super(Restaurant, self).save(*args, **kwargs)
-        print("saved successfully")
 
 
 class RestaurantHours(models.Model):

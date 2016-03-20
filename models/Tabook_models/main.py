@@ -8,8 +8,8 @@ from .models import *
 
 
 # customer
-#TODO: override save functions in model class so that we can save in encoded pwd instead of plain text (done)
-#TODO: updat function: password need to be encoded
+# TODO: override save functions in model class so that we can save in encoded pwd instead of plain text (done)
+# TODO: updat function: password need to be encoded
 
 def create_customer(request):
     content = {'success': False}
@@ -19,13 +19,13 @@ def create_customer(request):
         print(request.POST)
         form = CustomerCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False) #save the fields to a user object but not save to the database
+            user = form.save(commit=False)  # save the fields to a user object but not save to the database
             print("form saved")
-            user.save() # save to the database with hashed password
+            user.save()  # save to the database with hashed password
             print("after save")
             content['success'] = True
-            #content['id'] = user.id
-            content['user'] = {'id':user.id, 'type':Authenticator.CUSTOMER}
+            # content['id'] = user.id
+            content['user'] = {'id': user.id, 'type': Authenticator.CUSTOMER}
         else:
             content['result'] = "Failed to create a new customer"
             content['html'] = form.errors
@@ -91,8 +91,8 @@ def create_restaurant(request):
             restaurant.save()
             print("restaurant saved")
             content['success'] = True
-            #content['id'] = restaurant.id
-            content['user'] = {'id':restaurant.id, 'type':Authenticator.RESTAURANT}
+            # content['id'] = restaurant.id
+            content['user'] = {'id': restaurant.id, 'type': Authenticator.RESTAURANT}
         else:
             content['result'] = "Failed to create a new restaurant"
             content['html'] = form.errors
@@ -219,15 +219,22 @@ def check_authenticator(request):
     else:
         content['success'] = True
         token = request.GET['authenticator']
+        print("token", token)
         authenticator = Authenticator.objects.filter(token=token).first()
+        print("auth", authenticator)
         if authenticator:
-            content['user'] = {'type': authenticator.user_type, 'id': authenticator.user_id}
+            user_id = authenticator.user_id
+            user_type = authenticator.user_type
+            if user_type == Authenticator.CUSTOMER:
+                user = Customer.objects.get(id=user_id)
+            else:
+                user = Restaurant.objects.get(id=user_id)
+            content['user'] = {'type': user_type, 'id': user_id, 'username': user.username}
         else:
             content['user'] = {'type': 'anonymous'}
     return JsonResponse(content)
 
-
-#request passes in user information, including type and user_id
+# request passes in user information, including type and user_id
 def create_authenticator(request):
     content = {'success': False}
     if request.method != 'POST':
@@ -253,7 +260,8 @@ def create_authenticator(request):
             content['result'] = 'Invalid user type.'
     return JsonResponse(content)
 
-#???should this use GET or POST
+
+# ???should this use GET or POST
 def authenticate_user(request):
     content = {'success': False}
     # check user name and password
@@ -268,21 +276,22 @@ def authenticate_user(request):
             if hashers.check_password(password, cus.password):
                 content['success'] = True
                 content['result'] = 'Customer authenticated successfully.'
-                content['user'] = {'id':cus.id, 'type':Authenticator.CUSTOMER}
+                content['user'] = {'id': cus.id, 'type': Authenticator.CUSTOMER}
             else:
-                content['result'] = 'Password is not matched.'
+                content['result'] = 'Password does not matched.'
         else:
             res = Restaurant.objects.filter(username=username).first()
             if res:
                 if hashers.check_password(password, res.password):
                     content['success'] = True
                     content['result'] = 'Restaurant authenticated successfully.'
-                    content['user'] = {'id':res.id, 'type':Authenticator.RESTAURANT}
+                    content['user'] = {'id': res.id, 'type': Authenticator.RESTAURANT}
                 else:
-                    content['result'] = 'Password is not matched.'
+                    content['result'] = 'Password does not matched.'
             else:
                 content['result'] = "Invalid username name or password."
         return JsonResponse(content)
+
 
 '''
 def login(request):

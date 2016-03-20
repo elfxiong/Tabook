@@ -4,7 +4,8 @@ import requests
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 
-#TODO: call create_authenticator function when register
+
+# TODO: call create_authenticator function when register
 def get_restaurant(request):
     url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
     id = request.GET['id']
@@ -22,6 +23,7 @@ def create_restaurant(request):
         #content = json.loads(response.content.decode('utf-8'))
         print(response.content, "test response")
         r = json.loads(response.content.decode('utf-8'))
+
         if r['success']:
             # Models layer failed
             # error = {}
@@ -35,16 +37,18 @@ def create_restaurant(request):
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
             r = requests.post(url, data={'user':data}).json()
+
             if r['success']:
                 content['success'] = True
                 content['auth'] = r['auth']
             else:
                 content['result'] = 'Models layer failed: ' + r['result']
-            #content['result'] = "Models layer failed: " + content['result']
+                # content['result'] = "Models layer failed: " + content['result']
         else:
             content['result'] = "Models layer failed: " + r['result']
 
     return JsonResponse(content)
+
 
 def create_customer(request):
     content = {"success": False}
@@ -54,15 +58,14 @@ def create_customer(request):
         request_url = settings.MODELS_LAYER_URL + "api/customers/create/"
         response = requests.post(request_url, data=request.POST)
         print(response)
-        r = response.json() #decode json object response
-
-        #content = json.loads(response.content.decode('utf-8'))
+        r = response.json()  # decode json object response
+        # content = json.loads(response.content.decode('utf-8'))
         if r['success']:
-            #new customer created
+            # new customer created
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
             print(data)
-            r = requests.post(url, data={'user':data}).json()
+            r = requests.post(url, data={'user': data}).json()
             if r['success']:
                 content['success'] = True
                 content['auth'] = r['auth']
@@ -70,10 +73,11 @@ def create_customer(request):
                 content['result'] = 'Models layer failed: ' + r['result']
 
         else:
-            #Models layer failed
+            # Models layer failed
             content['result'] = "Models layer failed: " + r['result']
 
     return JsonResponse(content)
+
 
 def get_customer(request, id):
     content = {"success": False}
@@ -178,7 +182,8 @@ def get_background_image(request):
 def sort_by_preference(request):
     pass
 
-#login: call authenticate_user(GET) and create authenticator(POST) functions
+
+# login: call authenticate_user(GET) and create authenticator(POST) functions
 def login(request):
     content = {'success': False}
     if request.method != 'POST':
@@ -187,30 +192,46 @@ def login(request):
         url = settings.MODELS_LAYER_URL + "api/auth/authenticate_user/"
         data = {'password': request.POST['password'], 'username': request.POST['username']}
         r = requests.get(url, params=data).json()
-        #print(r)
+        # print(r)
         if r['success']:
-            #user authenticated
-            url = settings.MODELS_LAYER_URL + "authenticator/create/"
-            data = r['user']
-            r = requests.post(url, data=data).json()
+            # user authenticated
+            url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
+            data = json.dumps(r['user'])
+            r = requests.post(url, data={'user': data}).json()
             if r['success']:
                 content['success'] = True
                 content['auth'] = r['auth']
             else:
                 content['result'] = 'Models layer failed: ' + r['result']
         else:
-            content['result'] = 'Models layer failed: '+r['result']
+            content['result'] = 'Models layer failed: ' + r['result']
     return JsonResponse(content)
 
 
-# a helper method that checks the authenticator and gets user type (anonymous/customer/restaurant)
+# take in authenticator token and check to see if user is authenticated, and if yes then return user info (username)
+def authenticate(request):
+    content = {'success': False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method. Expected GET."
+    else:
+        authenticator = request.GET.get('authenticator', "")
+        if authenticator:
+            user = get_user(authenticator)
+            print(user)
+            content['success'] = True
+            content['user'] = user
+    print(content)
+    return JsonResponse(content)
+
+
+# a helper method that checks the authenticator and gets user info (type:anonymous/customer/restaurant;id;username)
 # will be used by views that render different content for different types of user
-def get_user_type(token):
+def get_user(token):
     url = settings.MODELS_LAYER_URL + "api/auth/authenticator/check/"
     params = {'authenticator': token}
     r = requests.get(url, params).json()
     if r['success']:
-        return r['user']['type']
+        return r['user']
     else:
         # this method is incorrect or the API has changed
         raise Warning

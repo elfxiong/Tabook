@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Customer, Restaurant, Table, Reservation
+from .models import User, Customer, Restaurant, Table, Reservation, Authenticator
 
 
 @admin.register(Customer)
@@ -16,8 +16,12 @@ class RestaurantAdmin(admin.ModelAdmin):
 class RestaurantAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(Reservation)
 class RestaurantAdmin(admin.ModelAdmin):
     pass
 
 
+@admin.register(Authenticator)
+class Authenticator(admin.ModelAdmin):
+    pass
