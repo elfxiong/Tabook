@@ -19,6 +19,7 @@ def homepage(request):
     data = requests.get(url).json()
     context['featured_restaurants'] = data['result']
 
+    context['username'] = get_user_info(request)
     return render(request, 'index.html', context=context)
 
 
@@ -41,6 +42,8 @@ def restaurant_page(request, id):
     else:
         tables = data['result']
         context['tables'] = tables
+
+    context['username'] = get_user_info(request)
     return render(request, 'restaurant.html', context)
 
 
@@ -50,6 +53,8 @@ def restaurant_list(request):
     data = requests.get(url).json()
     # print(data.json())
     context['restaurants'] = data['result']
+
+    context['username'] = get_user_info(request)
     return render(request, 'restaurants.html', context)
 
 
@@ -68,7 +73,7 @@ def login_page(request):
     if not f.is_valid():
         # bogus form post, send them back to login page and show them an error
         print('error', f.errors)
-        return render(request, 'login.html',context)
+        return render(request, 'login.html', context)
     username = f.cleaned_data['username']
     password = f.cleaned_data['password']
     next = f.cleaned_data.get('next') or reverse('homepage')
@@ -80,7 +85,7 @@ def login_page(request):
         context['message'] = r['result']  # invalid username/password
         return render(request, 'login.html', context)
     response = HttpResponseRedirect(next)
-    response.set_signed_cookie(key=AUTH_COOKIE_KEY, value=r['auth'])
+    response.set_cookie(key=AUTH_COOKIE_KEY, value=r['auth'])
     context['result'] = "Successfully logged in. Redirecting."
     return response
 
@@ -88,3 +93,17 @@ def login_page(request):
 # probably need something special for restaurant registration
 def signup_page(request):
     return render(request, 'signup.html')
+
+
+def get_user_info(request):
+    authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
+    if not authenticator:
+        return "No auth Anonymous"
+
+    url = settings.EXP_LAYER_URL + "auth/user/"
+    params = {"authenticator": authenticator}
+    r = requests.get(url, params).json()
+    if r['success']:
+        return r['user']
+    else:
+        return "Not Success Anonymous"
