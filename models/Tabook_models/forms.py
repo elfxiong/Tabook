@@ -1,7 +1,8 @@
 from .models import Customer, Restaurant, Review
 from django import forms
 
-#TODO: override to check for duplicate usernames
+
+# TODO: override to check for duplicate usernames
 
 class CustomerCreationForm(forms.ModelForm):
     class Meta:
@@ -11,6 +12,7 @@ class CustomerCreationForm(forms.ModelForm):
     def validate(self):
         pass
 
+
 class RestaurantCreationForm(forms.ModelForm):
     class Meta:
         model = Restaurant
@@ -18,6 +20,7 @@ class RestaurantCreationForm(forms.ModelForm):
 
     def validate(self):
         pass
+
 
 class ReviewCreationForm(forms.ModelForm):
     class Meta:

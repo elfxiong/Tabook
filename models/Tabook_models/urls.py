@@ -19,8 +19,8 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^auth/login/$', login),
-    url(r'^auth/authenticator/check/$', check_authenticator),
+    url(r'^api/auth/login/$', login),
+    url(r'^api/auth/authenticator/check/$', check_authenticator),
     url(r'^api/customers/create/$', create_customer),
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),
     url(r'^api/customers/update/$', update_customer),

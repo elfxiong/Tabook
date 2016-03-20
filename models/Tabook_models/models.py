@@ -20,7 +20,7 @@ class Authenticator(models.Model):
         while not self.token:
             token = hmac.new(key=settings.SECRET_KEY.encode('utf-8'), msg=os.urandom(32),
                              digestmod='sha256').hexdigest()
-            if not self.objects.filter(pk=token).count():
+            if not Authenticator.objects.filter(pk=token).count():
                 self.token = token
         super(Authenticator, self).save(*args, **kwargs)
 
@@ -44,7 +44,7 @@ class Customer(User):
 
 
 class Restaurant(User):
-    restaurant_name = models.CharField(max_length=30) # Should this be unique(??)
+    restaurant_name = models.CharField(max_length=30)  # Should this be unique(??)
     address = models.CharField(max_length=200)
     price_range = models.PositiveSmallIntegerField(default=0)  # number of dollar signs
     category = models.CharField(max_length=30, default="unclassified")
@@ -67,6 +67,7 @@ class RestaurantHours(models.Model):
     sunday_open_time = models.TimeField(default='0:00')
     sunday_close_time = models.TimeField(default='23:59')
 
+
 class Table(models.Model):
     restaurant = models.ForeignKey(Restaurant)
     capacity = models.PositiveSmallIntegerField()
@@ -77,16 +78,15 @@ class Table(models.Model):
 
 class Reservation(models.Model):
     customer = models.ForeignKey(Customer)
-    status = models.CharField(max_length=30) # possible values ???
+    status = models.CharField(max_length=30)  # possible values ???
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
     start_time = models.DateTimeField(default=datetime.now, blank=True)
     duration = models.PositiveSmallIntegerField(default=1)  # number of minutes
 
+
 class Review(models.Model):
     customer = models.ForeignKey(Customer)
     restaurant = models.ForeignKey(Restaurant)
-    stars = models.PositiveSmallIntegerField(default=0) # number of stars 0-5
+    stars = models.PositiveSmallIntegerField(default=0)  # number of stars 0-5
     text = models.CharField(max_length=2000)
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
-
-
