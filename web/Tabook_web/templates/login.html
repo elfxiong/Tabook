@@ -37,10 +37,12 @@
                             <div class="form-group">
                                 <label>Username</label>
                                 <input type="text" class="form-control" name="username" placeholder="Username">
+                                <p class="help-block">{{ form.username.errors }}</p>
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
                                 <input type="password" class="form-control" name="password" placeholder="Password">
+                                <p class="help-block">{{ form.password.errors }}</p>
                             </div>
                             <button type="submit" class="button">Login</button>
                         </form>
