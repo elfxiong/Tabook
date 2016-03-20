@@ -13,15 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from Tabook_models.main import *
+from .main import *
 from django.conf.urls import url
 from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     #url(r'^auth/login/$', login),
-    url(r'^auth/authenticate_user/$', authenticate_user),
-    url(r'^auth/authenticator/check/$', check_authenticator),
+    url(r'^api/auth/authenticate_user/$', authenticate_user),
+    url(r'^api/auth/authenticator/create/$', check_authenticator),
+    url(r'^api/auth/authenticator/check/$', check_authenticator),
     url(r'^api/customers/create/$', create_customer),
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),
     url(r'^api/customers/update/$', update_customer),

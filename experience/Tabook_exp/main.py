@@ -157,9 +157,10 @@ def login(request):
         url = settings.MODELS_LAYER_URL + "api/auth/login/"
         data = {'password': request.POST['password'], 'username': request.POST['username']}
         r = requests.post(url, data).json()
+        print(r)
         if r['success']:
             content['success'] = True
-            content['auth'] = content['auth']
+            content['auth'] = r['auth']
         else:
             content['result'] = r['result']
     return JsonResponse(content)

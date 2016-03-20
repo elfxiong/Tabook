@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}
+    Login
+{% endblock %}
+{% load staticfiles %}
+
+{# TODO hash password#}
+{# TODO input validation#}
+{% block content %}
+    <div id="main-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="4u 12u(mobile)">
+
+                    <!-- Sidebar -->
+                    <section class="box">
+                        <header>
+                            <h3>Create an Account</h3>
+                        </header>
+
+                        <footer>
+                            <a href="#" class="button alt">Rate</a>
+                        </footer>
+                    </section>
+
+                </div>
+                <div class="8u 12u(mobile) important(mobile)">
+
+                    <!-- Content -->
+                    <article class="box post">
+                        <header>
+                            <h2>Login</h2>
+                        </header>
+                        {{ message }}
+                        <form method="post" action="{% url 'login_page' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control" name="username" placeholder="Username">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" name="password" placeholder="Password">
+                            </div>
+                            <button type="submit" class="button">Login</button>
+                        </form>
+                    </article>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

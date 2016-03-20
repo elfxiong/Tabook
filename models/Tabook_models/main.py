@@ -272,15 +272,12 @@ def login(request):
     else:
         username = request.POST['username']
         password = request.POST['password']
-
         cus = Customer.objects.filter(username=username, password=password).first()
         if cus:
-            authenticator = Authenticator.objects.create(user_id=cus.id,
-                                                         user_type=Authenticator.CUSTOMER)
+            authenticator = Authenticator.objects.create(user_id=cus.id, user_type=Authenticator.CUSTOMER)
             content['success'] = True
             content['auth'] = authenticator.token
             return JsonResponse(content)
-
         else:
             res = Restaurant.objects.filter(username=username, password=password).first()
             if res:
