@@ -217,32 +217,36 @@ def check_authenticator(request):
 #request passes in user information, including type and user_id
 def create_authenticator(request):
     content = {'success': False}
-    user = request.content['user']
-    if user['type'] == 'C':
-        authenticator = Authenticator.objects.create(user_id=user['id'],
-                                                     user_type=Authenticator.CUSTOMER)
-        content['success'] = True
-        content['auth'] = authenticator.token
-        return JsonResponse(content)
-
-    elif user['type'] == 'R':
-        authenticator = Authenticator.objects.create(user_id=user['id'],
-                                                     user_type=Authenticator.RESTAURANT)
-        content['success'] = True
-        content['auth'] = authenticator.token
-        return JsonResponse(content)
+    if request.method != 'POST':
+        content['result'] = 'Invalid request method. Expected POST.'
     else:
-        content['result'] = 'Invalid user type.'
+        user = request.content['user']
+        if user['type'] == 'C':
+            authenticator = Authenticator.objects.create(user_id=user['id'],
+                                                         user_type=Authenticator.CUSTOMER)
+            content['success'] = True
+            content['auth'] = authenticator.token
+            return JsonResponse(content)
 
+        elif user['type'] == 'R':
+            authenticator = Authenticator.objects.create(user_id=user['id'],
+                                                         user_type=Authenticator.RESTAURANT)
+            content['success'] = True
+            content['auth'] = authenticator.token
+            return JsonResponse(content)
+        else:
+            content['result'] = 'Invalid user type.'
+    return content
 
+#???should this use GET or POST
 def authenticate_user(request):
     content = {'success': False}
     # check user name and password
-    if request.method != 'POST':
-        content['result'] = "Invalid request method. Expected POST."
+    if request.method != 'GET':
+        content['result'] = "Invalid request method. Expected GET."
     else:
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.GET['username']
+        password = request.GET['password']
 
         cus = Customer.objects.filter(username=username).first()
         if cus:

@@ -148,7 +148,7 @@ def get_background_image(request):
 def sort_by_preference(request):
     pass
 
-
+#login: call authenticate_user(GET) and create authenticator(POST) functions
 def login(request):
     content = {'success': False}
     if request.method != 'POST':
@@ -156,7 +156,7 @@ def login(request):
     else:
         url = settings.MODELS_LAYER_URL + "api/auth/login/"
         data = {'password': request.POST['password'], 'username': request.POST['username']}
-        r = requests.post(url, data).json()
+        r = requests.get(url, params=data).json()
         print(r)
         if r['success']:
             content['success'] = True
