@@ -18,19 +18,32 @@ def create_restaurant(request):
         content["result"] = "GET Request Recieved. Expected POST."
     else:
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
-        response = requests.post(request_url, data=request.POST.dict())
+        response = requests.post(request_url, data=request.POST) #POST.dict() or POST?
         content = json.loads(response.content.decode('utf-8'))
         if not content['success']:
             # Models layer failed
-            error = {}
-            if content['result'] == "Invalid request method":
-                error["type"] = "GET Request Recieved. Expected POST."
-                return JsonResponse(error)
-            if content["result"] == "restaurant not found":
-                error["type"] = "Restaurant creation failed."
-            return JsonResponse(error)
+            # error = {}
+            # if content['result'] == "Invalid request method. Expected POST.":
+            #     error["type"] = "GET Request Recieved. Expected POST."
+            #     return JsonResponse(error)
+            # if content["result"] == "Failed to create a new restaurant":
+            #     error["type"] = "Restaurant creation failed."
+            # return JsonResponse(error)
+            content['result'] = "Models layer failed: " + content['result']
     return JsonResponse(content)
 
+def create_customer(request):
+    content = {"success": False}
+    if not request.method == "POST":
+        content["result"] = "GET request received. Expected POST."
+    else:
+        request_url = settings.MODELS_LAYER_URL + "api/customers/create/"
+        response = requests.post(request_url, data=request.POST)
+        content = json.loads(response.content.decode('utf-8'))
+        if not content['success']:
+            #Models layer failed
+            content['result'] = "Models layer failed: " + content['result']
+    return JsonResponse(content)
 
 def get_customer(request, id):
     content = {"success": False}
@@ -39,7 +52,6 @@ def get_customer(request, id):
     else:
         request_url = settings.MODELS_LAYER_URL + "api/customers/" + id + "/"
         r = requests.get(request_url)
-        return HttpResponse(r.text)
         r_dict = r.json()
         if not r_dict['success']:
             content['result'] = "Error from the model layer."
@@ -151,3 +163,6 @@ def login(request):
         else:
             content['result'] = r['result']
     return JsonResponse(content)
+
+
+

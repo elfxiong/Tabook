@@ -13,7 +13,7 @@ class Authenticator(models.Model):
     USER_TYPE_CHOICES = ((CUSTOMER, 'Customer'), (RESTAURANT, 'Restaurant'))
     user_type = models.CharField(max_length=2, choices=USER_TYPE_CHOICES, default='C')
     user_id = models.PositiveIntegerField()
-    token = models.CharField(primary_key=True)
+    token = models.CharField(primary_key=True, max_length=64)
     date_created = models.DateTimeField(auto_created=True, auto_now_add=True)
 
     def save(self, *args, **kwargs):

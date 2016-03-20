@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^api/restaurants/reviews/$', get_reviews),
     url(r'^api/restaurants/reviews/create/$', create_review),
     url(r'^api/tables/filter/$', filter_tables),
+
 ]
