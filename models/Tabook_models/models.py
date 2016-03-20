@@ -5,6 +5,8 @@ from django.conf import settings
 
 from django.db import models
 from datetime import datetime
+from django.contrib.auth import hashers
+
 
 
 class Authenticator(models.Model):
@@ -42,12 +44,25 @@ class Customer(User):
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        #salt?
+        hashed_password = hashers.make_password(self.password)
+        self.password = hashed_password
+        super(Customer, self).save(*args, **kwargs)
+
+
 
 class Restaurant(User):
     restaurant_name = models.CharField(max_length=30)  # Should this be unique(??)
     address = models.CharField(max_length=200)
     price_range = models.PositiveSmallIntegerField(default=0)  # number of dollar signs
     category = models.CharField(max_length=30, default="unclassified")
+
+    def save(self, *args, **kwargs):
+        #salt?
+        hashed_password = hashers.make_password(self.password)
+        self.password = hashed_password
+        super(Restaurant, self).save(*args, **kwargs)
 
 
 class RestaurantHours(models.Model):

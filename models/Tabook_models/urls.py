@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     #url(r'^auth/login/$', login),
     url(r'^api/auth/authenticate_user/$', authenticate_user),
-    url(r'^api/auth/authenticator/create/$', check_authenticator),
+    url(r'^api/auth/authenticator/create/$', create_authenticator),
     url(r'^api/auth/authenticator/check/$', check_authenticator),
     url(r'^api/customers/create/$', create_customer),
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),

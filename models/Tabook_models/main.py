@@ -1,4 +1,4 @@
-from Tabook_models.forms import CustomerCreationForm, RestaurantCreationForm, ReviewCreationForm
+from .forms import CustomerCreationForm, RestaurantCreationForm, ReviewCreationForm
 from django.http import JsonResponse
 from django.contrib.auth import hashers
 
@@ -6,7 +6,7 @@ from .models import *
 
 
 # customer
-#TODO: override creation forms so that we can save in encoded pwd instead of plain text
+#TODO: override save functions in model class so that we can save in encoded pwd instead of plain text (done)
 #TODO: updat function: password need to be encoded
 
 def create_customer(request):
@@ -16,9 +16,11 @@ def create_customer(request):
     else:
         form = CustomerCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False) #save the fields to a user object but not save to the database
+            user.save() # save to the database with hashed password
             content['success'] = True
-            content['id'] = user.id
+            #content['id'] = user.id
+            content['user'] = {'id':user.id, 'type':Authenticator.CUSTOMER}
         else:
             content['result'] = "Failed to create a new customer"
             content['html'] = form.errors
@@ -78,9 +80,11 @@ def create_restaurant(request):
     else:
         form = RestaurantCreationForm(request.POST.dict())
         if form.is_valid():
-            restaurant = form.save()
+            restaurant = form.save(commit=False)
+            restaurant.save()
             content['success'] = True
-            content['id'] = restaurant.id
+            #content['id'] = restaurant.id
+            content['user'] = {'id':restaurant.id, 'type':Authenticator.RESTAURANT}
         else:
             content['result'] = "Failed to create a new restaurant"
             content['html'] = form.errors
@@ -221,14 +225,14 @@ def create_authenticator(request):
         content['result'] = 'Invalid request method. Expected POST.'
     else:
         user = request.content['user']
-        if user['type'] == 'C':
+        if user['type'] == Authenticator.CUSTOMER:
             authenticator = Authenticator.objects.create(user_id=user['id'],
                                                          user_type=Authenticator.CUSTOMER)
             content['success'] = True
             content['auth'] = authenticator.token
             return JsonResponse(content)
 
-        elif user['type'] == 'R':
+        elif user['type'] == Authenticator.RESTAURANT:
             authenticator = Authenticator.objects.create(user_id=user['id'],
                                                          user_type=Authenticator.RESTAURANT)
             content['success'] = True
@@ -253,6 +257,7 @@ def authenticate_user(request):
             if hashers.check_password(password, cus.password):
                 content['success'] = True
                 content['result'] = 'Customer authenticated successfully.'
+                content['user'] = {'id':cus.id, 'type':Authenticator.CUSTOMER}
             else:
                 content['result'] = 'Password is not matched.'
         else:
@@ -261,6 +266,7 @@ def authenticate_user(request):
                 if hashers.check_password(password, res.password):
                     content['success'] = True
                     content['result'] = 'Restaurant authenticated successfully.'
+                    content['user'] = {'id':res.id, 'type':Authenticator.RESTAURANT}
                 else:
                     content['result'] = 'Password is not matched.'
             else:

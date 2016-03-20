@@ -39,10 +39,24 @@ def create_customer(request):
     else:
         request_url = settings.MODELS_LAYER_URL + "api/customers/create/"
         response = requests.post(request_url, data=request.POST)
-        content = json.loads(response.content.decode('utf-8'))
-        if not content['success']:
+        r = response.json() #decode json object response
+
+        #content = json.loads(response.content.decode('utf-8'))
+        if r['success']:
+            #new customer created
+            url = settings.MODELS_LAYER_URL + "authenticator/create/"
+            data = r['user']
+            r = requests.post(url, data=data).json()
+            if r['success']:
+                content['success'] = True
+                content['auth'] = r['auth']
+            else:
+                content['result'] = 'Models layer failed: ' + r['result']
+
+        else:
             #Models layer failed
             content['result'] = "Models layer failed: " + content['result']
+
     return JsonResponse(content)
 
 def get_customer(request, id):
@@ -154,15 +168,22 @@ def login(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        url = settings.MODELS_LAYER_URL + "api/auth/login/"
+        url = settings.MODELS_LAYER_URL + "api/auth/authenticate_user/"
         data = {'password': request.POST['password'], 'username': request.POST['username']}
         r = requests.get(url, params=data).json()
-        print(r)
+        #print(r)
         if r['success']:
-            content['success'] = True
-            content['auth'] = r['auth']
+            #user authenticated
+            url = settings.MODELS_LAYER_URL + "authenticator/create/"
+            data = r['user']
+            r = requests.post(url, data=data).json()
+            if r['success']:
+                content['success'] = True
+                content['auth'] = r['auth']
+            else:
+                content['result'] = 'Models layer failed: ' + r['result']
         else:
-            content['result'] = r['result']
+            content['result'] = 'Models layer failed: '+r['result']
     return JsonResponse(content)
 
 
