@@ -16,18 +16,23 @@ def create_customer(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        print(request.POST)
+        #print(request.POST)
         form = CustomerCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)  # save the fields to a user object but not save to the database
-            print("form saved")
-            user.save()  # save to the database with hashed password
-            print("after save")
-            content['success'] = True
-            # content['id'] = user.id
-            content['user'] = {'id': user.id, 'type': Authenticator.CUSTOMER}
+            #check username duplicates in both tables
+            username = user.username
+            cus = Customer.objects.filter(username=username)
+            res = Restaurant.objects.filter(username=username)
+            if not cus and not res:
+                user.save()  # save to the database with hashed password
+                content['success'] = True
+                # content['id'] = user.id
+                content['user'] = {'id': user.id, 'type': Authenticator.CUSTOMER}
+            else:
+                content['result'] = 'Username has already existed. Failed to create a new customer.'
         else:
-            content['result'] = "Failed to create a new customer"
+            content['result'] = "Form is invalid. Failed to create a new customer"
             content['html'] = form.errors
     print("content:" + str(content))
     return JsonResponse(content)
