@@ -16,6 +16,7 @@ def create_customer(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
+        print(request.POST)
         form = CustomerCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False) #save the fields to a user object but not save to the database
@@ -83,16 +84,19 @@ def create_restaurant(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        form = RestaurantCreationForm(request.POST.dict())
+        print(request.POST)
+        form = RestaurantCreationForm(request.POST)
         if form.is_valid():
             restaurant = form.save(commit=False)
             restaurant.save()
+            print("restaurant saved")
             content['success'] = True
             #content['id'] = restaurant.id
             content['user'] = {'id':restaurant.id, 'type':Authenticator.RESTAURANT}
         else:
             content['result'] = "Failed to create a new restaurant"
             content['html'] = form.errors
+    print(content, '  test content')
     return JsonResponse(content)
 
 

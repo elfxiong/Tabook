@@ -20,7 +20,8 @@ def create_restaurant(request):
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
         response = requests.post(request_url, data=request.POST) #POST.dict() or POST?
         #content = json.loads(response.content.decode('utf-8'))
-        r = response.json()
+        print(response.content, "test response")
+        r = json.loads(response.content.decode('utf-8'))
         if r['success']:
             # Models layer failed
             # error = {}
@@ -31,9 +32,9 @@ def create_restaurant(request):
             #     error["type"] = "Restaurant creation failed."
             # return JsonResponse(error)
             #new customer created
-            url = settings.MODELS_LAYER_URL + "authenticator/create/"
-            data = r['user']
-            r = requests.post(url, data=data).json()
+            url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
+            data = json.dumps(r['user'])
+            r = requests.post(url, data={'user':data}).json()
             if r['success']:
                 content['success'] = True
                 content['auth'] = r['auth']

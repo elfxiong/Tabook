@@ -52,20 +52,26 @@ class Customer(User):
         print("saved: " +hashed_password)
 
         super(Customer, self).save(*args, **kwargs)
+        print("saved successfully")
 
 
 
 class Restaurant(User):
-    restaurant_name = models.CharField(max_length=30)  # Should this be unique(??)
-    address = models.CharField(max_length=200)
-    price_range = models.PositiveSmallIntegerField(default=0)  # number of dollar signs
-    category = models.CharField(max_length=30, default="unclassified")
+    restaurant_name = models.CharField(max_length=30, null=True, blank=True)  # Should this be unique(??)
+    address = models.CharField(max_length=200, null=True, blank=True)
+    price_range = models.PositiveSmallIntegerField(default=0, null=True, blank=True)  # number of dollar signs
+    category = models.CharField(max_length=30, default="unclassified", null=True, blank=True)
 
     def save(self, *args, **kwargs):
         #salt?
+        print("saving")
         hashed_password = hashers.make_password(self.password)
         self.password = hashed_password
+        print("saved: " +hashed_password)
+        print("args",*args)
+        print("kwargs",**kwargs)
         super(Restaurant, self).save(*args, **kwargs)
+        print("saved successfully")
 
 
 class RestaurantHours(models.Model):
