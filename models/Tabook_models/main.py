@@ -93,11 +93,18 @@ def create_restaurant(request):
         form = RestaurantCreationForm(request.POST)
         if form.is_valid():
             restaurant = form.save(commit=False)
-            restaurant.save()
-            print("restaurant saved")
-            content['success'] = True
-            # content['id'] = restaurant.id
-            content['user'] = {'id': restaurant.id, 'type': Authenticator.RESTAURANT}
+            #check username duplicates in both tables
+            username = restaurant.username
+            cus = Customer.objects.filter(username=username)
+            res = Restaurant.objects.filter(username=username)
+            if not cus and not res:
+                restaurant.save()
+                content['success'] = True
+                # content['id'] = restaurant.id
+                content['user'] = {'id': restaurant.id, 'type': Authenticator.RESTAURANT}
+            else:
+                content['result'] = 'Username has already existed. Failed to create a new customer.'
+
         else:
             content['result'] = "Failed to create a new restaurant"
             content['html'] = form.errors
