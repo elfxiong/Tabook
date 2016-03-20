@@ -24,8 +24,10 @@
                         Signup
                     </a>
                 </li>
-                <li class="{% active_page request "signup_page" %}">
-                    {{ username.username }}
+                <li class="{% active_page request "logout" %}">
+                    <a href="{% url "logout" %}">
+                        {{ username.username }}
+                    </a>
                 </li>
             </ul>
             {#                <li><input type="text" class="" style="text-area: 50em" placeholder="Search"></li>#}

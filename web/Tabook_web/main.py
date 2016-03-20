@@ -107,3 +107,9 @@ def get_user_info(request):
         return r['user']
     else:
         return "Not Success Anonymous"
+
+
+def logout(request):
+    response = HttpResponseRedirect(reverse("homepage"))
+    response.delete_cookie(AUTH_COOKIE_KEY)
+    return response
