@@ -1,3 +1,5 @@
+import json
+
 from .forms import CustomerCreationForm, RestaurantCreationForm, ReviewCreationForm
 from django.http import JsonResponse
 from django.contrib.auth import hashers
@@ -17,13 +19,16 @@ def create_customer(request):
         form = CustomerCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False) #save the fields to a user object but not save to the database
+            print("form saved")
             user.save() # save to the database with hashed password
+            print("after save")
             content['success'] = True
             #content['id'] = user.id
             content['user'] = {'id':user.id, 'type':Authenticator.CUSTOMER}
         else:
             content['result'] = "Failed to create a new customer"
             content['html'] = form.errors
+    print("content:" + str(content))
     return JsonResponse(content)
 
 
@@ -224,7 +229,9 @@ def create_authenticator(request):
     if request.method != 'POST':
         content['result'] = 'Invalid request method. Expected POST.'
     else:
-        user = request.content['user']
+        print('test')
+        print(request.POST)
+        user = json.loads(request.POST['user'])
         if user['type'] == Authenticator.CUSTOMER:
             authenticator = Authenticator.objects.create(user_id=user['id'],
                                                          user_type=Authenticator.CUSTOMER)
@@ -240,7 +247,7 @@ def create_authenticator(request):
             return JsonResponse(content)
         else:
             content['result'] = 'Invalid user type.'
-    return content
+    return JsonResponse(content)
 
 #???should this use GET or POST
 def authenticate_user(request):

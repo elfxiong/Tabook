@@ -19,8 +19,9 @@ def create_restaurant(request):
     else:
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
         response = requests.post(request_url, data=request.POST) #POST.dict() or POST?
-        content = json.loads(response.content.decode('utf-8'))
-        if not content['success']:
+        #content = json.loads(response.content.decode('utf-8'))
+        r = response.json()
+        if r['success']:
             # Models layer failed
             # error = {}
             # if content['result'] == "Invalid request method. Expected POST.":
@@ -29,20 +30,6 @@ def create_restaurant(request):
             # if content["result"] == "Failed to create a new restaurant":
             #     error["type"] = "Restaurant creation failed."
             # return JsonResponse(error)
-            content['result'] = "Models layer failed: " + content['result']
-    return JsonResponse(content)
-
-def create_customer(request):
-    content = {"success": False}
-    if not request.method == "POST":
-        content["result"] = "GET request received. Expected POST."
-    else:
-        request_url = settings.MODELS_LAYER_URL + "api/customers/create/"
-        response = requests.post(request_url, data=request.POST)
-        r = response.json() #decode json object response
-
-        #content = json.loads(response.content.decode('utf-8'))
-        if r['success']:
             #new customer created
             url = settings.MODELS_LAYER_URL + "authenticator/create/"
             data = r['user']
@@ -52,10 +39,38 @@ def create_customer(request):
                 content['auth'] = r['auth']
             else:
                 content['result'] = 'Models layer failed: ' + r['result']
+            #content['result'] = "Models layer failed: " + content['result']
+        else:
+            content['result'] = "Models layer failed: " + r['result']
+
+    return JsonResponse(content)
+
+def create_customer(request):
+    content = {"success": False}
+    if not request.method == "POST":
+        content["result"] = "GET request received. Expected POST."
+    else:
+        request_url = settings.MODELS_LAYER_URL + "api/customers/create/"
+        response = requests.post(request_url, data=request.POST)
+        print(response)
+        r = response.json() #decode json object response
+
+        #content = json.loads(response.content.decode('utf-8'))
+        if r['success']:
+            #new customer created
+            url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
+            data = json.dumps(r['user'])
+            print(data)
+            r = requests.post(url, data={'user':data}).json()
+            if r['success']:
+                content['success'] = True
+                content['auth'] = r['auth']
+            else:
+                content['result'] = 'Models layer failed: ' + r['result']
 
         else:
             #Models layer failed
-            content['result'] = "Models layer failed: " + content['result']
+            content['result'] = "Models layer failed: " + r['result']
 
     return JsonResponse(content)
 
