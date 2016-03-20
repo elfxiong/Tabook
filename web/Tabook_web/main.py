@@ -86,4 +86,4 @@ def login_page(request):
 
 # probably need something special for restaurant registration
 def signup_page(request):
-    pass
+    return render(request,'signup.html')
