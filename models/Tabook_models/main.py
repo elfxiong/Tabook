@@ -1,6 +1,6 @@
 import json
 
-from .forms import CustomerCreationForm, RestaurantCreationForm, ReviewCreationForm
+from .forms import CustomerCreationForm, RestaurantCreationForm, ReviewCreationForm, ReservationCreationForm
 from django.http import JsonResponse
 from django.contrib.auth import hashers
 
@@ -219,9 +219,7 @@ def check_authenticator(request):
     else:
         content['success'] = True
         token = request.GET['authenticator']
-        print("token", token)
         authenticator = Authenticator.objects.filter(token=token).first()
-        print("auth", authenticator)
         if authenticator:
             user_id = authenticator.user_id
             user_type = authenticator.user_type
@@ -233,6 +231,7 @@ def check_authenticator(request):
         else:
             content['user'] = {'type': 'anonymous'}
     return JsonResponse(content)
+
 
 # request passes in user information, including type and user_id
 def create_authenticator(request):
@@ -319,3 +318,62 @@ def login(request):
         content['result'] = "Invalid username name or password."
     return JsonResponse(content)
 '''
+
+
+def create_reservation(request):
+    content = {'success': False}
+    if request.method != 'POST':
+        content['result'] = "Invalid request method. Expected POST."
+    else:
+        form = ReservationCreationForm(request.POST)
+        if form.is_valid():
+            res = form.save()
+            content['success'] = True
+            content['reservation'] = {'id': res.id}
+        else:
+            content['result'] = "Failed to create a new reservation."
+            content['html'] = form.errors
+    return JsonResponse(content)
+
+
+def get_reservation(request, id):
+    content = {"success": False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method. Expected GET."
+    else:
+        try:
+            user = Reservation.objects.get(pk=id)
+        except Reservation.DoesNotExist:
+            content["result"] = "Reservation not found."
+        else:
+            result = {}
+            for field_name in ['id', 'customer', 'status', 'created', 'start_time', 'duration']:
+                result[field_name] = getattr(user, field_name)
+            content['result'] = result
+            content["success"] = True
+    return JsonResponse(content)
+
+
+def update_reservation(request):
+    content = {'success': False}
+    if request.method != "POST":
+        content['result'] = "Invalid request method. Expected POST."
+    elif 'id' not in request.POST:
+        content['result'] = "Reservation id not provided."
+    else:
+        try:
+            uid = request.POST['id']
+            user = Reservation.objects.get(pk=uid)
+        except Reservation.DoesNotExist:
+            content['result'] = "Reservation not found."
+        else:
+            changed = []
+            for field_name in ['customer', 'status', 'created', 'start_time', 'duration']:
+                if field_name in request.POST:
+                    value = request.POST[field_name]
+                    setattr(user, field_name, value)
+                    changed.append(field_name)
+            user.save()
+            content['changed'] = changed
+            content['success'] = True
+    return JsonResponse(content)
