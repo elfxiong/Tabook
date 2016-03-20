@@ -6,4 +6,7 @@
 - making reservation (3 layers)
 - check duplicated username when creating users
 - front end login form validation (may hash the password in form.save())
-- prevent duplicated authenticator for the same user
+- prevent duplicated authenticator for the same user (caused by login before logout)
+- login status
+    - test check_authenticator code
+    - show username on top right corner (to indicate the user is logged in)
