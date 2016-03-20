@@ -64,10 +64,11 @@ def login_page(request):
         # next = request.GET.get('next') or reverse('homepage')
         return render(request, 'login.html')
     f = LoginForm(request.POST)
+    context['form'] = f
     if not f.is_valid():
         # bogus form post, send them back to login page and show them an error
         print('error', f.errors)
-        return render(request, 'login.html')
+        return render(request, 'login.html',context)
     username = f.cleaned_data['username']
     password = f.cleaned_data['password']
     next = f.cleaned_data.get('next') or reverse('homepage')
@@ -86,4 +87,4 @@ def login_page(request):
 
 # probably need something special for restaurant registration
 def signup_page(request):
-    pass
+    return render(request, 'signup.html')

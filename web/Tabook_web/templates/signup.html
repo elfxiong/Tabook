@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 {% block title %}
-    Login
+    Signup
 {% endblock %}
 {% load staticfiles %}
-
-{# TODO hash password#}
-{# TODO input validation#}
 {% block content %}
     <div id="main-wrapper">
         <div class="container">
@@ -15,7 +12,7 @@
                     <!-- Sidebar -->
                     <section class="box">
                         <header>
-                            <h3>Create an Account</h3>
+                            <h3>Log in to your account</h3>
                         </header>
 
                         <footer>
@@ -29,22 +26,20 @@
                     <!-- Content -->
                     <article class="box post">
                         <header>
-                            <h2>Login</h2>
+                            <h2>Signup</h2>
                         </header>
                         {{ message }}
-                        <form method="post" action="{% url 'login_page' %}">
+                        <form method="post" action="{% url 'signup_page' %}">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label>Username</label>
                                 <input type="text" class="form-control" name="username" placeholder="Username">
-                                <p class="help-block">{{ form.username.errors }}</p>
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
                                 <input type="password" class="form-control" name="password" placeholder="Password">
-                                <p class="help-block">{{ form.password.errors }}</p>
                             </div>
-                            <button type="submit" class="button">Login</button>
+                            <button type="submit" class="button">Signup</button>
                         </form>
                     </article>
 

@@ -14,8 +14,18 @@
 
                 <li class="{% active_page request "restaurant_page,restaurant_list" %}"><a
                         href="{% url "restaurant_list" %}">Restaurants</a></li>
+                <li class="{% active_page request "login_page" %}">
+                    <a href="{% url "login_page" %}">
+                        Login
+                    </a>
+                </li>
+                <li class="{% active_page request "signup_page" %}">
+                    <a href="{% url "signup_page" %}">
+                        Signup
+                    </a>
+                </li>
             </ul>
-{#                <li><input type="text" class="" style="text-area: 50em" placeholder="Search"></li>#}
+            {#                <li><input type="text" class="" style="text-area: 50em" placeholder="Search"></li>#}
 
 
             <div style="text-align: center">
