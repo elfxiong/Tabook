@@ -4,7 +4,7 @@ import requests
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 
-
+#TODO: call create_authenticator function when register
 def get_restaurant(request):
     url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
     id = request.GET['id']

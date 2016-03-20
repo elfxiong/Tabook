@@ -11,6 +11,7 @@ class CustomerCreationForm(forms.ModelForm):
     def validate(self):
         pass
 
+
 class RestaurantCreationForm(forms.ModelForm):
     class Meta:
         model = Restaurant

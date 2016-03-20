@@ -19,7 +19,8 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^auth/login/$', login),
+    #url(r'^auth/login/$', login),
+    url(r'^auth/authenticate_user/$', authenticate_user),
     url(r'^auth/authenticator/check/$', check_authenticator),
     url(r'^api/customers/create/$', create_customer),
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),
@@ -31,5 +32,6 @@ urlpatterns = [
     url(r'^api/restaurants/reviews/$', get_reviews),
     url(r'^api/restaurants/reviews/create/$', create_review),
     url(r'^api/tables/filter/$', filter_tables),
+
 
 ]
