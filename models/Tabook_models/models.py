@@ -61,7 +61,6 @@ class Restaurant(User):
     category = models.CharField(max_length=30, default="unclassified", null=True, blank=True)
 
     def save(self, *args, **kwargs):
-
         hashed_password = hashers.make_password(self.password)
         self.password = hashed_password
         super(Restaurant, self).save(*args, **kwargs)
@@ -97,8 +96,12 @@ class Reservation(models.Model):
     customer = models.ForeignKey(Customer)
     status = models.CharField(max_length=30)  # possible values ???
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
-    start_time = models.DateTimeField(default=datetime.now, blank=True)
-    duration = models.PositiveSmallIntegerField(default=1)  # number of minutes
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    @property
+    def duration(self):
+        return self.end_time - self.start_time  # not tested
 
 
 class Review(models.Model):
