@@ -1,4 +1,4 @@
-from .models import Customer, Restaurant, Review
+from .models import Customer, Restaurant, Review, Reservation
 from django import forms
 
 
@@ -25,4 +25,10 @@ class RestaurantCreationForm(forms.ModelForm):
 class ReviewCreationForm(forms.ModelForm):
     class Meta:
         model = Review
+        fields = '__all__'
+
+
+class ReservationCreationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
         fields = '__all__'
