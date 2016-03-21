@@ -363,6 +363,7 @@ def get_reservation(request, id):
                 result[field_name] = getattr(user, field_name)
             content['result'] = result
             content["success"] = True
+        print('model content: ', content)
     return JsonResponse(content)
 
 

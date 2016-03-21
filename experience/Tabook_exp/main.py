@@ -189,7 +189,7 @@ def login(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        url = settings.MODELS_LAYER_URL + "api/auth/authenticate_user/"
+        url = settings.MODELS_LAYER_URL + "api/auth/check_password/"
         data = {'password': request.POST['password'], 'username': request.POST['username']}
         r = requests.get(url, params=data).json()
         # print(r)
@@ -274,8 +274,11 @@ def get_reservation_history(request):
                 elif r['user']['type'] == "Anonymous":
                     content['result'] = "User not authenticated. Please log in."
                 elif r['user']['type'] == "C":
-                    request_url = settings.MODELS_LAYER_URL + "api/reservations/filter/"
-                    resp = requests.get(request_url, data=request.GET).json()
+                    #request_url = settings.MODELS_LAYER_URL + "api/reservations/filter/"
+                    request_url = settings.MODELS_LAYER_URL + "api/reservations/"
+                    print('exp request GET: ', request.GET)
+                    #resp = requests.get(request_url, data=request.GET).json()
+                    resp = requests.get(request_url, param={'id':r['user']['id']}).json()
                     if not resp['success']:
                         content['result'] = "Model layer error: " + str(resp['result'])
                     else:
