@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^restaurants/featured/$', get_featured),
     url(r'^customers/create_customer/$', create_customer),
     url(r'^customers/get_customer/(?P<id>\d+)/$', get_customer),
+    url(r'^customers/create_reservation/$', create_reservation),
     url(r'^tables_by_restaurant_id/(?P<id>\d+)/$', get_tables_by_restaurant_id),
 
 ]
