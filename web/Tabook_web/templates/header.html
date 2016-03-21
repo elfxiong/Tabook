@@ -29,6 +29,12 @@
                         {{ username.username }}
                     </a>
                 </li>
+                <li class="{% active_page request "reservation_history" %}">
+                    <a href="{% url "reservation_history" %}">
+                        Reservation History
+                    </a>
+                </li>
+
             </ul>
             {#                <li><input type="text" class="" style="text-area: 50em" placeholder="Search"></li>#}
 
