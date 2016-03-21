@@ -96,8 +96,8 @@ class Reservation(models.Model):
     customer = models.ForeignKey(Customer)
     status = models.CharField(max_length=30)  # possible values ???
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.DateTimeField( auto_now_add=True)  # have better default value?
+    end_time = models.DateTimeField(auto_now_add=True)
 
     @property
     def duration(self):
