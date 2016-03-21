@@ -62,7 +62,6 @@ def restaurant_list(request):
 AUTH_COOKIE_KEY = "authenticator"
 
 
-# TODO hash password somewhere
 def login_page(request):
     context = {}
     if request.method == 'GET':

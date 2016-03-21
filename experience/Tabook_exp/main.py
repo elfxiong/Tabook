@@ -208,18 +208,19 @@ def login(request):
     return JsonResponse(content)
 
 
+
+# signup: call create_user(GET) and create authenticator(POST) functions
+def signup(request):
+    pass
+
+
 # take in authenticator token and check to see if user is authenticated, and if yes then return user info (username)
 def authenticate(request):
     content = {'success': False}
     if request.method != 'GET':
         content['result'] = "Invalid request method. Expected GET."
     else:
-        authenticator = request.GET.get('authenticator', "")
-        if authenticator:
-            user = get_user(authenticator)
-            print(user)
-            content['success'] = True
-            content['user'] = user
+        content = get_user(request.GET.get('autheticator', ""))
     print(content)
     return JsonResponse(content)
 
@@ -230,12 +231,30 @@ def get_user(token):
     url = settings.MODELS_LAYER_URL + "api/auth/authenticator/check/"
     params = {'authenticator': token}
     r = requests.get(url, params).json()
-    if r['success']:
-        return r['user']
+    return r # r = {success: True, user: {type: ###, id: ###, username: ###}}
+
+# same login for both customer and restaurant
+AUTH_COOKIE_KEY = "authenticator"
+
+# request.POST holds: user token (authenticator), reservation detials
+# needs to send: customerID, start_time, end_time
+def create_reservation(request):
+    content = {'success': False}
+    if request.method != 'POST':
+        content['result'] = "Invalid request method. Expected POST."
     else:
-        # this method is incorrect or the API has changed
-        raise Warning
-        # return None
+        # AUTHETICATE USER (get customer ID)
+        authenticator = request.POST['authenticator']
+        if not authenticator:
+            return "No auth Anonymous"
+        r = get_user(authenticator)
+        if r['success']:
+            url = settings.MODELS_LAYER_URL + "api/reservations/create/"
+            params = request.POST['reservation_details']
+            content = requests.post(url, params).json()
+        else:
+            content['result'] = "User not authenticated."
+    return JsonResponse(content)
 
 
 # take in authenticator and return reservation history
