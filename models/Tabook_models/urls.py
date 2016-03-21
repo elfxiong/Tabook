@@ -20,7 +20,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # url(r'^auth/login/$', login),
-    url(r'^api/auth/authenticate_user/$', authenticate_user),
+    url(r'^api/auth/check_password/$', check_password),
     url(r'^api/auth/authenticator/create/$', create_authenticator),
     url(r'^api/auth/authenticator/check/$', check_authenticator),
     url(r'^api/customers/create/$', create_customer),

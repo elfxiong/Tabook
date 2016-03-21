@@ -127,6 +127,7 @@ def signup_page(request):
     return response
 
 
+# helper method that takes in a request and use the cookie to figure out the type of user
 def get_user_info(request):
     authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
     if not authenticator:
@@ -146,3 +147,17 @@ def logout(request):
     response = HttpResponseRedirect(reverse("homepage"))
     response.delete_cookie(AUTH_COOKIE_KEY)
     return response
+
+
+def reservation_history(request):
+    authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
+    if not authenticator:
+        return HttpResponseRedirect(reverse('login_page'))
+
+    url = settings.EXP_LAYER_URL + "customers/reservation_history/"
+    params = {"authenticator": authenticator}
+    r = requests.get(url, params).json()
+    if not r['success']:
+        return HttpResponse(r['result'])
+    reservations = r['result']
+    return render(request, 'reservation-history.html', {'reservations': reservations})

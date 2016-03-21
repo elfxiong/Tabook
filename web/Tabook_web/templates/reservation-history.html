@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}
+    Login
+{% endblock %}
+{% load staticfiles %}
+
+{# TODO hash password#}
+{# TODO input validation#}
+{% block content %}
+    <div id="main-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="4u 12u(mobile)">
+
+                    <!-- Sidebar -->
+                    <section class="box">
+                        <header>
+                            <h3>Filter your reservation by ###</h3>
+                        </header>
+
+                        <footer>
+                            <a href="#" class="button alt">Rate</a>
+                        </footer>
+                    </section>
+
+                </div>
+                <div class="8u 12u(mobile) important(mobile)">
+
+                    <!-- Content -->
+                    <article class="box post">
+                        <header>
+                            <h2>ALl reservations you've made</h2>
+                        </header>
+                        <table>
+                            <tr>
+                                <th>id</th>
+                                <th>status</th>
+                                <th>from</th>
+                                <th>to</th>
+                                <th></th>
+                            </tr>
+                            {% for res in reservations %}
+                                <tr>
+                                    <td>{{ res.id }}</td>
+                                    <td>{{ res.status }}</td>
+                                    <td>{{ res.start_time }}</td>
+                                    <td>{{ res.end_time }}</td>
+                                    <td>{{ res.created }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </article>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

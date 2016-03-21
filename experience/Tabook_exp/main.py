@@ -19,8 +19,8 @@ def create_restaurant(request):
         content["result"] = "GET Request Recieved. Expected POST."
     else:
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
-        response = requests.post(request_url, data=request.POST) #POST.dict() or POST?
-        #content = json.loads(response.content.decode('utf-8'))
+        response = requests.post(request_url, data=request.POST)  # POST.dict() or POST?
+        # content = json.loads(response.content.decode('utf-8'))
         print(response.content, "test response")
         r = json.loads(response.content.decode('utf-8'))
 
@@ -33,10 +33,10 @@ def create_restaurant(request):
             # if content["result"] == "Failed to create a new restaurant":
             #     error["type"] = "Restaurant creation failed."
             # return JsonResponse(error)
-            #new customer created
+            # new customer created
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
-            r = requests.post(url, data={'user':data}).json()
+            r = requests.post(url, data={'user': data}).json()
 
             if r['success']:
                 content['success'] = True
@@ -236,3 +236,36 @@ def get_user(token):
         # this method is incorrect or the API has changed
         raise Warning
         # return None
+
+
+# take in authenticator and return reservation history
+def get_reservation_history(request):
+    content = {'success': False}
+    if not request.method == "GET":
+        content['result'] = "Expecting GET."
+    else:
+        authenticator = request.GET.get('authenticator', "")
+        if not authenticator:
+            content['result'] = "User not authenticated. Please pass in authenticator."
+        else:
+            r = get_user(token=authenticator)
+            if r['success']:
+                if 'user' not in r or 'type' not in r['user']:
+                    raise Warning  # API changed?
+                elif r['user']['type'] == "Anonymous":
+                    content['result'] = "User not authenticated. Please log in."
+                elif r['user']['type'] == "C":
+                    request_url = settings.MODELS_LAYER_URL + "api/reservations/filter/"
+                    resp = requests.get(request_url, data=request.GET).json()
+                    if not resp['success']:
+                        content['result'] = "Model layer error: " + str(resp['result'])
+                    else:
+                        content['result'] = resp['result']
+                        content['success'] = True
+                elif r['user']['type'] == "R":
+                    content['result'] = "Restaurant users do not have a reservation history."
+                else:
+                    content['result'] = "Unrecognized user type: " + str(r['user']['type'])
+            else:
+                raise Warning  # wrong request method used?
+    return JsonResponse(content)

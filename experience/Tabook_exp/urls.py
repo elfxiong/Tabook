@@ -20,7 +20,7 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^auth/login/$', login),
-    url(r'^auth/user/$',authenticate),
+    url(r'^auth/user/$', authenticate),
     url(r'^restaurants/all/$', search_restaurant),
     url(r'^restaurants/(?P<id>\d+)/$', get_restaurant),
     url(r'^restaurants/create_restaurant/$', create_restaurant),
@@ -31,5 +31,5 @@ urlpatterns = [
     url(r'^customers/create_customer/$', create_customer),
     url(r'^customers/get_customer/(?P<id>\d+)/$', get_customer),
     url(r'^tables_by_restaurant_id/(?P<id>\d+)/$', get_tables_by_restaurant_id),
-
+    url(r'^customers/reservation_history/$', get_reservation_history),
 ]

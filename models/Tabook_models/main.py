@@ -16,11 +16,11 @@ def create_customer(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        #print(request.POST)
+        # print(request.POST)
         form = CustomerCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)  # save the fields to a user object but not save to the database
-            #check username duplicates in both tables
+            # check username duplicates in both tables
             username = user.username
             cus = Customer.objects.filter(username=username)
             res = Restaurant.objects.filter(username=username)
@@ -93,7 +93,7 @@ def create_restaurant(request):
         form = RestaurantCreationForm(request.POST)
         if form.is_valid():
             restaurant = form.save(commit=False)
-            #check username duplicates in both tables
+            # check username duplicates in both tables
             username = restaurant.username
             cus = Customer.objects.filter(username=username)
             res = Restaurant.objects.filter(username=username)
@@ -273,9 +273,9 @@ def create_authenticator(request):
 
 
 # ???should this use GET or POST
-def authenticate_user(request):
+# check user name and password and return user id and user type
+def check_password(request):
     content = {'success': False}
-    # check user name and password
     if request.method != 'GET':
         content['result'] = "Invalid request method. Expected GET."
     else:
@@ -359,7 +359,7 @@ def get_reservation(request, id):
             content["result"] = "Reservation not found."
         else:
             result = {}
-            for field_name in ['id', 'customer', 'status', 'created', 'start_time', 'duration']:
+            for field_name in ['id', 'customer', 'status', 'created', 'start_time', 'end_time']:
                 result[field_name] = getattr(user, field_name)
             content['result'] = result
             content["success"] = True
@@ -380,7 +380,7 @@ def update_reservation(request):
             content['result'] = "Reservation not found."
         else:
             changed = []
-            for field_name in ['customer', 'status', 'created', 'start_time', 'duration']:
+            for field_name in ['customer', 'status', 'created', 'start_time', 'end_time']:
                 if field_name in request.POST:
                     value = request.POST[field_name]
                     setattr(user, field_name, value)
