@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import LoginForm, SignUpForm
+from .forms import LoginForm, SignUpForm, ReservationForm
 
 
 def homepage(request):
@@ -118,13 +118,13 @@ def signup_page(request):
     print("postdata,", post_data)
     r = requests.post(url, post_data).json()
     if not r or not r['success']:
-        print("signup_page experience layer not sucessful")
+        print("signup_page experience layer not successful")
         context['message'] = r['result']  # invalid username/password
         return render(request, 'signup.html', context)
     response = HttpResponseRedirect(next)
     response.set_cookie(key=AUTH_COOKIE_KEY, value=r['auth'])
     context['result'] = "Successfully logged in. Redirecting."
-    print("singup_page returned sucessfully, returning")
+    print("singup_page returned successfully, returning")
     return response
 
 
@@ -159,7 +159,7 @@ def logout(request):
 
 
 def reservation_history(request):
-    context={}
+    context = {}
     authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
     if not authenticator:
         return HttpResponseRedirect(reverse('login_page'))
@@ -175,4 +175,19 @@ def reservation_history(request):
 
 
 def create_reservation(request):
-    return render(request, 'create_reservation.html')
+    context = {}
+    authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
+    if not authenticator:
+        return HttpResponseRedirect(reverse('login_page'))
+
+    if request.method != 'POST':
+        return HttpResponse("Invalid request method")
+
+    f = ReservationForm(request.POST)
+    context['form'] = f
+    if f.is_valid():
+        pass
+        # TODO
+    else:
+        pass
+    return render(request, 'create_reservation.html', context)
