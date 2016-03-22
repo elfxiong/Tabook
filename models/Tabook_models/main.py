@@ -279,21 +279,19 @@ def delete_authenticator(request):
     else:
         authenticator = request.POST['authenticator']
         auth = Authenticator.objects.filter(token=authenticator)
-        #test
+        # test
         print('before deleting the auth:', len(auth))
         #####
         if len(auth) > 0:
             a = auth.first()
             a.delete()
-        #test
+        # test
         auth = Authenticator.objects.filter(token=authenticator)
         print('after deleting the auth: ', len(auth))
         #####
 
         content['success'] = True
     return JsonResponse(content)
-
-
 
 
 # ???should this use GET or POST
@@ -383,7 +381,7 @@ def get_reservation(request, id):
             content["result"] = "Reservation not found."
         else:
             result = {}
-            for field_name in ['id', 'customer', 'status', 'created', 'start_time', 'end_time']:
+            for field_name in ['id', 'customer', 'table', 'status', 'created', 'start_time', 'end_time']:
                 result[field_name] = getattr(user, field_name)
             content['result'] = result
             content["success"] = True
@@ -405,7 +403,7 @@ def update_reservation(request):
             content['result'] = "Reservation not found."
         else:
             changed = []
-            for field_name in ['customer', 'status', 'created', 'start_time', 'end_time']:
+            for field_name in ['customer', 'table', 'status', 'created', 'start_time', 'end_time']:
                 if field_name in request.POST:
                     value = request.POST[field_name]
                     setattr(user, field_name, value)
@@ -415,6 +413,7 @@ def update_reservation(request):
             content['success'] = True
     return JsonResponse(content)
 
+
 # filter reservations and return a list of reservations with info
 def filter_reservation(request):
     content = {'success': False}
@@ -422,14 +421,15 @@ def filter_reservation(request):
         content['result'] = "Invalid request method. Expected GET."
     else:
         print('GET: ', request.GET)
-        parameters = ['customer', 'id', 'status', 'created', 'start_time', 'end_time']
+        parameters = ['customer', 'id', 'status', 'created', 'start_time', 'end_time', 'table']
         query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
         reservations = Reservation.objects.filter(**query_attrs)
         content['success'] = True
         content['result'] = [{field: getattr(r, field) for field in parameters} for r in reservations]
-        #manually change costumer id to be numeric
-        if len(content['result']) > 0:
+        # manually change costumer id to be numeric
+        if content['result']:
             for r in content['result']:
                 r['customer'] = r['customer'].id
+                r['table'] = r['table'].id
     print('after filter:', content)
     return JsonResponse(content)
