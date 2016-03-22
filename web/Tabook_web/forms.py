@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 
 
@@ -13,5 +15,5 @@ class SignUpForm(forms.Form):
 
 class ReservationForm(forms.Form):
     table = forms.IntegerField()
-    start_time = forms.DateTimeField()
-    end_time = forms.DateTimeField()
+    start_time = forms.DateTimeField(initial=datetime.datetime.now)  # no parenthesis
+    end_time = forms.DateTimeField(initial=datetime.datetime.now)

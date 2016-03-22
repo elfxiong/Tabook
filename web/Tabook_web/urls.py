@@ -27,5 +27,5 @@ urlpatterns = [
     url(r'^signup/', main.signup_page, name='signup_page'),
     url(r'^logout/', main.logout, name='logout'),
     url(r'^reservation/history', main.reservation_history, name='reservation_history'),
-    url(r'^reservation/create', main.create_reservation, name='create_reservation'),
+    # url(r'^reservation/create', main.create_reservation, name='create_reservation'),
 ]

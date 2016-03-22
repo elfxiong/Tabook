@@ -61,13 +61,15 @@
                                     <td>{{ table.style }}</td>
                                     <td>{{ table.capacity }}</td>
                                     <td>
-                                        <form method='post' action="{% url "make_reservation" %}">
+                                        <form method='post' action=".">
+                                            {% csrf_token %}
                                             <input type="hidden" value="{{ table.id }}">
                                             {{ form.start_time }}
+                                            {{ form.start_time.value }}
                                             {{ form.end_time }}
                                             <input type="submit" value="Reserve">
                                         </form>
-                                        <
+
                                     </td>
                                 </tr>
                                 {#                                    <div>{{ table }}</div>#}
