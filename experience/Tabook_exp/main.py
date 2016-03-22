@@ -234,7 +234,7 @@ def authenticate(request):
     if request.method != 'GET':
         content['result'] = "Invalid request method. Expected GET."
     else:
-        content = get_user(request.GET.get('autheticator', ""))
+        content = get_user(request.GET.get('authenticator', ""))
     #print(content)
     return JsonResponse(content)
 
