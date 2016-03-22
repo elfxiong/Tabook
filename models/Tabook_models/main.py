@@ -403,5 +403,9 @@ def filter_reservation(request):
         reservations = Reservation.objects.filter(**query_attrs)
         content['success'] = True
         content['result'] = [{field: getattr(r, field) for field in parameters} for r in reservations]
+        #manually change costumer id to be numeric
+        if len(content['result']) > 0:
+            for r in content['result']:
+                r['customer'] = r['customer'].id
     print('after filter:', content)
     return JsonResponse(content)
