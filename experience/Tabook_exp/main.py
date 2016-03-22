@@ -268,17 +268,18 @@ def get_reservation_history(request):
             content['result'] = "User not authenticated. Please pass in authenticator."
         else:
             r = get_user(token=authenticator)
+            print('after exp authenticator check: ', r)
             if r['success']:
                 if 'user' not in r or 'type' not in r['user']:
                     raise Warning  # API changed?
                 elif r['user']['type'] == "Anonymous":
                     content['result'] = "User not authenticated. Please log in."
                 elif r['user']['type'] == "C":
-                    #request_url = settings.MODELS_LAYER_URL + "api/reservations/filter/"
-                    request_url = settings.MODELS_LAYER_URL + "api/reservations/"
-                    print('exp request GET: ', request.GET)
+                    request_url = settings.MODELS_LAYER_URL + "api/reservations/filter/"
+                    #request_url = settings.MODELS_LAYER_URL + "api/reservations/"
                     #resp = requests.get(request_url, data=request.GET).json()
-                    resp = requests.get(request_url, param={'id':r['user']['id']}).json()
+                    params = {'customer':r['user']['id']}
+                    resp = requests.get(request_url, params=params).json()
                     if not resp['success']:
                         content['result'] = "Model layer error: " + str(resp['result'])
                     else:

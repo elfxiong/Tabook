@@ -390,3 +390,18 @@ def update_reservation(request):
             content['changed'] = changed
             content['success'] = True
     return JsonResponse(content)
+
+# filter reservations and return a list of reservations with info
+def filter_reservation(request):
+    content = {'success': False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method. Expected GET."
+    else:
+        print('GET: ', request.GET)
+        parameters = ['customer', 'status', 'created', 'start_time', 'end_time']
+        query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
+        reservations = Reservation.objects.filter(**query_attrs)
+        content['success'] = True
+        content['result'] = [{field: getattr(r, field) for field in parameters} for r in reservations]
+    print('after filter:', content)
+    return JsonResponse(content)

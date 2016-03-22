@@ -36,4 +36,6 @@ urlpatterns = [
     url(r'^api/reservations/create/$', create_reservation),
     url(r'^api/reservations/(?P<id>\d+)/$', get_reservation),
     url(r'^api/reservations/update/$', update_reservation),
+    url(r'^api/reservations/filter/$', filter_reservation),
+
 ]
