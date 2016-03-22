@@ -208,7 +208,7 @@ def login(request):
     return JsonResponse(content)
 
 
-#logout: call delete authenticator function
+# logout: call delete authenticator function
 def logout(request):
     content = {'success': False}
     if request.method != 'POST':
@@ -235,7 +235,7 @@ def authenticate(request):
         content['result'] = "Invalid request method. Expected GET."
     else:
         content = get_user(request.GET.get('authenticator', ""))
-    #print(content)
+    # print(content)
     return JsonResponse(content)
 
 
@@ -245,10 +245,12 @@ def get_user(token):
     url = settings.MODELS_LAYER_URL + "api/auth/authenticator/check/"
     params = {'authenticator': token}
     r = requests.get(url, params).json()
-    return r # r = {success: True, user: {type: ###, id: ###, username: ###}}
+    return r  # r = {success: True, user: {type: ###, id: ###, username: ###}}
+
 
 # same login for both customer and restaurant
 AUTH_COOKIE_KEY = "authenticator"
+
 
 # request.POST holds: user token (authenticator), reservation detials
 # needs to send: customerID, start_time, end_time
@@ -264,10 +266,15 @@ def create_reservation(request):
         r = get_user(authenticator)
         if r['success']:
             url = settings.MODELS_LAYER_URL + "api/reservations/create/"
-            params = request.POST['reservation_details']
+            dt = json.loads(request.POST['reservation_details'])
+            params = dt
+            print(r['user']['id'])
+            params['customer'] = r['user']['id']
+            print(params)
             content = requests.post(url, params).json()
         else:
             content['result'] = "User not authenticated."
+    print(content)
     return JsonResponse(content)
 
 
@@ -290,9 +297,9 @@ def get_reservation_history(request):
                     content['result'] = "User not authenticated. Please log in."
                 elif r['user']['type'] == "C":
                     request_url = settings.MODELS_LAYER_URL + "api/reservations/filter/"
-                    #request_url = settings.MODELS_LAYER_URL + "api/reservations/"
-                    #resp = requests.get(request_url, data=request.GET).json()
-                    params = {'customer':r['user']['id']}
+                    # request_url = settings.MODELS_LAYER_URL + "api/reservations/"
+                    # resp = requests.get(request_url, data=request.GET).json()
+                    params = {'customer': r['user']['id']}
                     resp = requests.get(request_url, params=params).json()
                     print('resp, ', resp)
                     if not resp['success']:

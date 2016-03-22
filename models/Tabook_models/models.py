@@ -95,7 +95,8 @@ class Table(models.Model):
 class Reservation(models.Model):
     customer = models.ForeignKey(Customer)
     table = models.ForeignKey(Table)
-    status = models.CharField(max_length=30, default="active")  # possible values: active, confirmed, cancelled, pending(?), ????
+    status = models.CharField(max_length=30, default="active",
+                              blank=True)  # possible values: active, confirmed, cancelled, pending(?), ????
     created = models.DateTimeField(auto_created=True, auto_now_add=True)
     start_time = models.DateTimeField()  # have better default value?
     end_time = models.DateTimeField()

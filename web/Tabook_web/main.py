@@ -56,7 +56,7 @@ def restaurant_page(request, id):
                                    'end_time': str(datetime.datetime.now())}
             data = {'authenticator': authenticator, 'reservation_details': json.dumps(reservation_details)}
             r = requests.post(url, data).json()
-            print(r)
+            print()
             pass
             # TODO
         else:
