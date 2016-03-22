@@ -11,7 +11,7 @@
     - ~~test check_authenticator code~~
     - ~~show username on top right corner (to indicate the user is logged in)~~
 
-- fixtures
+- ~~fixtures
 - front end for creating reservation
 	testing for experience layer create_reservation
 - ~~testing for reservation_history
