@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}
+    Login
+{% endblock %}
+{% load staticfiles %}
+
+{# TODO hash password#}
+{# TODO input validation#}
+{% block content %}
+    <div id="main-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="4u 12u(mobile)">
+
+                    <!-- Sidebar -->
+                    <section class="box">
+                        <header>
+                            <h3>Create a Reservation</h3>
+                        </header>
+
+                        <footer>
+                            <a href="#" class="button alt">Rate</a>
+                        </footer>
+                    </section>
+
+                </div>
+                <div class="8u 12u(mobile) important(mobile)">
+
+                    <!-- Content -->
+                    <article class="box post">
+                        <header>
+                            <h2>Reservation for {{ resaurant }}</h2>
+                        </header>
+                        {{ message }}
+                        <form method="post" action="{% url 'login_page' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Restaurant Name</label>
+                                <input type="text" class="form-control" name="username" placeholder="Username">
+                                <p class="help-block">{{ form.username.errors }}</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Time</label>
+                                <input style="padding:0em 0.75em"type="password" class="form-control" name="password" placeholder="Password">
+                                <p class="help-block">{{ form.password.errors }}</p>
+                            </div>
+                            <button type="submit" class="button">Login</button>
+                        </form>
+                    </article>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -174,3 +174,7 @@ def reservation_history(request):
     context['reservations'] = r['result']
     context['username'] = get_user_info(request)
     return render(request, 'reservation-history.html', context)
+
+
+def create_reservation(request):
+    return render(request, 'create_reservation.html')
