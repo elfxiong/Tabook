@@ -9,3 +9,9 @@ class LoginForm(forms.Form):
 class SignUpForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(min_length=8, widget=forms.PasswordInput)
+
+
+class ReservationForm(forms.Form):
+    table = forms.IntegerField()
+    start_time = forms.DateTimeField()
+    end_time = forms.DateTimeField()
