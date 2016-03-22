@@ -64,6 +64,7 @@ AUTH_COOKIE_KEY = "authenticator"
 
 def login_page(request):
     context = {}
+    context['username'] = get_user_info(request)
     if request.method == 'GET':
         return render(request, 'login.html')
     f = LoginForm(request.POST)
@@ -93,6 +94,7 @@ def login_page(request):
 # probably need something special for restaurant registration
 def signup_page(request):
     context = {}
+    context['username'] = get_user_info(request)
 
     if request.method == 'GET':
         print("signup_page get request recieved")
@@ -149,6 +151,7 @@ def logout(request):
 
 
 def reservation_history(request):
+    context={}
     authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
     if not authenticator:
         return HttpResponseRedirect(reverse('login_page'))
@@ -158,5 +161,6 @@ def reservation_history(request):
     r = requests.get(url, params).json()
     if not r['success']:
         return HttpResponse(r['result'])
-    reservations = r['result']
-    return render(request, 'reservation-history.html', {'reservations': reservations})
+    context['reservations'] = r['result']
+    context['username'] = get_user_info(request)
+    return render(request, 'reservation-history.html', context)
