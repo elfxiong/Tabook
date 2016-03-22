@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^api/auth/check_password/$', check_password),
     url(r'^api/auth/authenticator/create/$', create_authenticator),
     url(r'^api/auth/authenticator/check/$', check_authenticator),
+    url(r'^api/auth/authenticator/delete/$', delete_authenticator),
     url(r'^api/customers/create/$', create_customer),
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),
     url(r'^api/customers/update/$', update_customer),

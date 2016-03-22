@@ -145,8 +145,18 @@ def get_user_info(request):
 
 
 def logout(request):
+    authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
+    if not authenticator:
+        return HttpResponseRedirect(reverse('login_page'))
+    url = settings.EXP_LAYER_URL + "auth/logout/"
+    data = {"authenticator": authenticator}
+    r = requests.post(url, data=data)
+    #if not r['success']:
+
+
     response = HttpResponseRedirect(reverse("homepage"))
     response.delete_cookie(AUTH_COOKIE_KEY)
+
     return response
 
 

@@ -272,6 +272,30 @@ def create_authenticator(request):
     return JsonResponse(content)
 
 
+def delete_authenticator(request):
+    content = {'success': False}
+    if request.method != 'POST':
+        content['result'] = 'Invalid request method. Expected POST.'
+    else:
+        authenticator = request.POST['authenticator']
+        auth = Authenticator.objects.filter(token=authenticator)
+        #test
+        print('before deleting the auth:', len(auth))
+        #####
+        if len(auth) > 0:
+            a = auth.first()
+            a.delete()
+        #test
+        auth = Authenticator.objects.filter(token=authenticator)
+        print('after deleting the auth: ', len(auth))
+        #####
+
+        content['success'] = True
+    return JsonResponse(content)
+
+
+
+
 # ???should this use GET or POST
 # check user name and password and return user id and user type
 def check_password(request):

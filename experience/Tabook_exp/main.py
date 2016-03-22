@@ -208,6 +208,20 @@ def login(request):
     return JsonResponse(content)
 
 
+#logout: call delete authenticator function
+def logout(request):
+    content = {'success': False}
+    if request.method != 'POST':
+        content['result'] = "Invalid request method. Expected POST."
+    else:
+        url = settings.MODELS_LAYER_URL + "api/auth/authenticator/delete/"
+        r = requests.post(url, data=request.POST).json()  # {'authenticator':xxxxxxxxx}
+        if r['success']:
+            content['success'] = True
+        else:
+            content['result'] = 'Models layer failed: ' + r['result']
+    return JsonResponse(content)
+
 
 # signup: call create_user(GET) and create authenticator(POST) functions
 def signup(request):
