@@ -14,26 +14,31 @@
 
                 <li class="{% active_page request "restaurant_page,restaurant_list" %}"><a
                         href="{% url "restaurant_list" %}">Restaurants</a></li>
-                <li class="{% active_page request "login_page" %}">
-                    <a href="{% url "login_page" %}">
-                        Login
-                    </a>
-                </li>
-                <li class="{% active_page request "signup_page" %}">
-                    <a href="{% url "signup_page" %}">
-                        Signup
-                    </a>
-                </li>
-                <li class="{% active_page request "logout" %}">
-                    <a href="{% url "logout" %}">
-                        {{ username.username }}
-                    </a>
-                </li>
-                <li class="{% active_page request "reservation_history" %}">
+                {% if not username.username %}
+                    <li class="{% active_page request "login_page" %}">
+                        <a href="{% url "login_page" %}">
+                            Login
+                        </a>
+                    </li>
+                    <li class="{% active_page request "signup_page" %}">
+                        <a href="{% url "signup_page" %}">
+                            Signup
+                        </a>
+                    </li>
+                {% endif %}
+                {% if username.username %}
+                    <li class="{% active_page request "reservation_history" %}">
                     <a href="{% url "reservation_history" %}">
-                        Reservation History
+                        {{ username.username }}'s Reservation History
                     </a>
-                </li>
+                    </li>
+                    <li class="{% active_page request "logout" %}">
+                        <a href="{% url "logout" %}">
+                            Logout
+                        </a>
+                    </li>
+                {% endif %}
+
 
             </ul>
             {#                <li><input type="text" class="" style="text-area: 50em" placeholder="Search"></li>#}
