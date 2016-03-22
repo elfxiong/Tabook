@@ -221,7 +221,7 @@ def authenticate(request):
         content['result'] = "Invalid request method. Expected GET."
     else:
         content = get_user(request.GET.get('autheticator', ""))
-    print(content)
+    #print(content)
     return JsonResponse(content)
 
 
@@ -280,6 +280,7 @@ def get_reservation_history(request):
                     #resp = requests.get(request_url, data=request.GET).json()
                     params = {'customer':r['user']['id']}
                     resp = requests.get(request_url, params=params).json()
+                    print('resp, ', resp)
                     if not resp['success']:
                         content['result'] = "Model layer error: " + str(resp['result'])
                     else:
