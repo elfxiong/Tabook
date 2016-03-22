@@ -398,7 +398,7 @@ def filter_reservation(request):
         content['result'] = "Invalid request method. Expected GET."
     else:
         print('GET: ', request.GET)
-        parameters = ['customer', 'status', 'created', 'start_time', 'end_time']
+        parameters = ['customer', 'id', 'status', 'created', 'start_time', 'end_time']
         query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
         reservations = Reservation.objects.filter(**query_attrs)
         content['success'] = True
