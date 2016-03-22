@@ -153,10 +153,8 @@ def logout(request):
     r = requests.post(url, data=data)
     #if not r['success']:
 
-
     response = HttpResponseRedirect(reverse("homepage"))
     response.delete_cookie(AUTH_COOKIE_KEY)
-
     return response
 
 
