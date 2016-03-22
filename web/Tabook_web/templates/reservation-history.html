@@ -14,13 +14,14 @@
 
                     <!-- Sidebar -->
                     <section class="box">
-                        <header>
-                            <h3>Filter your reservation by ###</h3>
-                        </header>
+{#                        <header>#}
+{#                            <h3>Filter your reservation by ###</h3>#}
+{#                        </header>#}
+                        <a href="{% url 'create_reservation' %}" class="button alt">Make a Reservation</a>
 
-                        <footer>
-                            <a href="#" class="button alt">Rate</a>
-                        </footer>
+{#                        <footer>#}
+{#                            <a href="#" class="button alt">Rate</a>#}
+{#                        </footer>#}
                     </section>
 
                 </div>
@@ -31,6 +32,8 @@
                         <header>
                             <h2>All reservations you've made</h2>
                         </header>
+                        <div style="float:right">
+                        </div>
                         <table>
                             <tr>
                                 <th>id</th>
