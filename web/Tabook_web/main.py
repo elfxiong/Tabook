@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import requests
@@ -51,14 +52,15 @@ def restaurant_page(request, id):
         context['form'] = f
         if request.method == "POST" and f.is_valid():
             url = settings.EXP_LAYER_URL + "customers/create_reservation/"
-            reservation_details = {'table': f.clened_data['table'], 'start_time': f.cleaned_data['start_time'],
-                                   'end_time': f.cleaned_data['end_time']}
+            reservation_details = {'table': f.cleaned_data['table'], 'start_time': str(datetime.datetime.now()),
+                                   'end_time': str(datetime.datetime.now())}
             data = {'authenticator': authenticator, 'reservation_details': json.dumps(reservation_details)}
             r = requests.post(url, data).json()
             print(r)
             pass
             # TODO
         else:
+            print(f.errors)
             pass
 
     context['username'] = get_user_info(request)
@@ -169,7 +171,7 @@ def logout(request):
     url = settings.EXP_LAYER_URL + "auth/logout/"
     data = {"authenticator": authenticator}
     r = requests.post(url, data=data)
-    #if not r['success']:
+    # if not r['success']:
 
     response = HttpResponseRedirect(reverse("homepage"))
     response.delete_cookie(AUTH_COOKIE_KEY)

@@ -63,7 +63,7 @@
                                     <td>
                                         <form method='post' action=".">
                                             {% csrf_token %}
-                                            <input type="hidden" value="{{ table.id }}">
+                                            <input type="hidden" name='table' value="{{ table.id }}">
                                             {{ form.start_time }}
                                             {{ form.start_time.value }}
                                             {{ form.end_time }}
