@@ -3,6 +3,8 @@ import urllib.request
 import requests
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
+from kafka import KafkaProducer
+from elasticsearch import Elasticsearch
 
 
 # TODO: call create_authenticator function when register
@@ -265,16 +267,45 @@ def create_reservation(request):
             return "No auth Anonymous"
         r = get_user(authenticator)
         if r['success']:
+            # call function to put a new listing into model
             url = settings.MODELS_LAYER_URL + "api/reservations/create/"
             dt = json.loads(request.POST['reservation_details'])
             params = dt
-            print(r['user']['id'])
+            #print(r['user']['id'])
             params['customer'] = r['user']['id']
-            print(params)
             content = requests.post(url, params).json()
+            if content['success']:
+                # add listing into kafka
+                reservation_info = content['reservation']
+                #reservation_info = json.load(content['reservation'])
+                producer = KafkaProducer(bootstrap_servers='kafka:9092')
+                new_listing = dt #containing table, start_time, end_time TODO: need created_time to be returned back hear
+                new_listing['customer_id'] = r['user']['id']
+                new_listing['created_time'] = reservation_info['created'] # right?
+                new_listing['reservation_id'] = reservation_info['id']
+                producer.send('new-listings-topic', json.dumps(new_listing).encode('utf-8'))
+
+            else:
+                #not be able to add it to the database
+                return JsonResponse(content)
         else:
             content['result'] = "User not authenticated."
     print(content)
+    return JsonResponse(content)
+
+
+def search_reservation(request):
+    content = {'success': False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method. Expected GET."
+    else:
+        query = request.GET['search_query']
+        es = Elasticsearch(['es'])
+        result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
+        content['success'] = True
+        content['search_result'] = result
+        #test
+        HttpResponse(content)
     return JsonResponse(content)
 
 

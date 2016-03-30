@@ -120,4 +120,3 @@ STATIC_URL = '/static/'
 
 # layers
 MODELS_LAYER_URL = "http://models-api:8000/"
-

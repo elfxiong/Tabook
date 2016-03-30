@@ -1,36 +1,3 @@
-models:
-   container_name: tabook-isa-models
-   image: tp33/django:1.2
-   external_links:
-     - mysql:db
-   volumes:
-     - ./models:/app
-   command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py loaddata fixture.json && mod_wsgi-express start-server --reload-on-changes ./Tabook_models/wsgi.py"
-   ports:
-     - "8001:8000"
-
-exp:
-   container_name: tabook-isa-exp
-   image: tp33/django:1.2
-   links:
-      - models:models-api
-   ports:
-      - "8002:8000"
-   volumes:
-      - ./experience:/app
-   command: bash -c "pip install requests && mod_wsgi-express start-server --reload-on-changes ./Tabook_exp/wsgi.py"
-
-web:
-   container_name: tabook-isa-web
-   image: tp33/django:1.2
-   links:
-      - exp:exp-api
-   ports:
-      - "8000:8000"
-   volumes:
-      - ./web:/app
-   command: bash -c "pip install requests && mod_wsgi-express start-server --url-alias /static /app/Tabook_web/static --reload-on-changes ./Tabook_web/wsgi.py"
-
 kafka:
    image: spotify/kafka
    container_name: kafka
@@ -44,3 +11,49 @@ es:
    container_name: es
    ports:
       - "9200:9200"
+
+kafka_es_batch:
+   image: tp33/django-docker:1.3
+   container_name: kafka_es_batch
+   volumes:
+      - ./kafka_es_batch:/app
+   links:
+      - kafka:kafka
+      - es:es
+   command: bash -c "python k_e_batch.py"
+
+models:
+   container_name: tabook-isa-models
+   image: tp33/django-docker:1.3
+   external_links:
+     - mysql:db
+   volumes:
+     - ./models:/app
+   command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py loaddata fixture.json && mod_wsgi-express start-server --reload-on-changes ./Tabook_models/wsgi.py"
+   ports:
+     - "8001:8000"
+
+exp:
+   container_name: tabook-isa-exp
+   image: tp33/django-docker:1.3
+   links:
+      - models:models-api
+      - kafka:kafka
+      - es:es
+   ports:
+      - "8002:8000"
+   volumes:
+      - ./experience:/app
+   command: bash -c "pip install requests && mod_wsgi-express start-server --reload-on-changes ./Tabook_exp/wsgi.py && python ./Tabook_exp/new_listing_topic.py"
+
+web:
+   container_name: tabook-isa-web
+   image: tp33/django-docker:1.3
+   links:
+      - exp:exp-api
+   ports:
+      - "8000:8000"
+   volumes:
+      - ./web:/app
+   command: bash -c "pip install requests && mod_wsgi-express start-server --url-alias /static /app/Tabook_web/static --reload-on-changes ./Tabook_web/wsgi.py"
+

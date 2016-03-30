@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^customers/create_customer/$', create_customer),
     url(r'^customers/get_customer/(?P<id>\d+)/$', get_customer),
     url(r'^customers/create_reservation/$', create_reservation),
+    url(r'^customers/search_reservation/$', search_reservation),
     url(r'^tables_by_restaurant_id/(?P<id>\d+)/$', get_tables_by_restaurant_id),
     url(r'^customers/reservation_history/$', get_reservation_history),
 ]
