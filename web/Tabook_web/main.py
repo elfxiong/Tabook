@@ -191,7 +191,11 @@ def restaurant_search(request):
         url = settings.EXP_LAYER_URL + "/restaurants/search/"
     else:
         url = settings.EXP_LAYER_URL + "restaurants/all/"
-    data = requests.get(url, {'search_query': search_query}).json()
-    # TODO parse the returned json to get restaurant info
-    context['restaurants'] = data['result']
+    r = requests.get(url, {'search_query': search_query}).json()
+    if r['success']:
+        # TODO parse the returned json to get restaurant info
+        context['restaurants'] = r['result']
+        context['query'] = search_query
+    else:
+        pass  # TODO error?
     return render(request, 'restaurant-search.html', context)
