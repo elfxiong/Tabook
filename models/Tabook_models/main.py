@@ -125,7 +125,7 @@ def get_restaurant(request, id):
             result = {}
             for field_name in ['id', 'username', 'email', 'phone']:
                 result[field_name] = getattr(user, field_name)
-            content[result] = result
+            content['result'] = result
             content["success"] = True
     return JsonResponse(content)
 
@@ -326,34 +326,6 @@ def check_password(request):
         return JsonResponse(content)
 
 
-'''
-def login(request):
-    content = {'success': False}
-    # check user name and password
-    if request.method != 'POST':
-        content['result'] = "Invalid request method. Expected POST."
-    else:
-        username = request.POST['username']
-        password = request.POST['password']
-        cus = Customer.objects.filter(username=username, password=password).first()
-        if cus:
-            authenticator = Authenticator.objects.create(user_id=cus.id, user_type=Authenticator.CUSTOMER)
-            content['success'] = True
-            content['auth'] = authenticator.token
-            return JsonResponse(content)
-        else:
-            res = Restaurant.objects.filter(username=username, password=password).first()
-            if res:
-                authenticator = Authenticator.objects.create(user_id=res.id,
-                                                             user_type=Authenticator.RESTAURANT)
-                content['success'] = True
-                content['auth'] = authenticator.token
-                return JsonResponse(content)
-        content['result'] = "Invalid username name or password."
-    return JsonResponse(content)
-'''
-
-
 def create_reservation(request):
     content = {'success': False}
     if request.method != 'POST':
@@ -363,7 +335,7 @@ def create_reservation(request):
         if form.is_valid():
             res = form.save()
             content['success'] = True
-            content['reservation'] = {'id': res.id, 'created':res.created}
+            content['reservation'] = {'id': res.id, 'created': res.created}
         else:
             content['result'] = "Failed to create a new reservation."
             content['html'] = form.errors

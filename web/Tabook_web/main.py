@@ -193,26 +193,3 @@ def reservation_history(request):
     context['username'] = get_user_info(request)
     return render(request, 'reservation-history.html', context)
 
-# def create_reservation(request):
-#     context = {}
-#     authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
-#     if not authenticator:
-#         return HttpResponseRedirect(reverse('login_page'))
-#
-#     if request.method != 'POST':
-#         return HttpResponse("Invalid request method")
-#
-#     f = ReservationForm(request.POST)
-#     context['form'] = f
-#     if f.is_valid():
-#         url = settings.EXP_LAYER_URL + "customers/create_reservation/"
-#         reservation_details = {'table': f.clened_data['table'], 'start_time': f.cleaned_data['start_time'],
-#                                'end_time': f.cleaned_data['end_time']}
-#         data = {'authenticator': authenticator, 'reservation_details': json.dumps(reservation_details)}
-#         r = requests.post(url, data).json()
-#         print(r)
-#         pass
-#         # TODO
-#     else:
-#         pass
-#     return render(request, 'create_reservation.html', context)
