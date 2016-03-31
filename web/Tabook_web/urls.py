@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', main.homepage, name='homepage'),
     url(r'^restaurants/(?P<id>\d+)/', main.restaurant_page, name='restaurant_page'),
-    url(r'^restaurants/', main.restaurant_list, name='restaurant_list'),
+    url(r'^restaurants/', main.restaurant_search, name='restaurant_list'),
     url(r'^login/', main.login_page, name='login_page'),
     url(r'^signup/', main.signup_page, name='signup_page'),
     url(r'^logout/', main.logout, name='logout'),

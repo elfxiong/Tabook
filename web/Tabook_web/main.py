@@ -67,17 +67,6 @@ def restaurant_page(request, id):
     return render(request, 'restaurant.html', context)
 
 
-def restaurant_list(request):
-    context = {}
-    url = settings.EXP_LAYER_URL + "restaurants/all/"
-    data = requests.get(url).json()
-    # print(data.json())
-    context['restaurants'] = data['result']
-
-    context['username'] = get_user_info(request)
-    return render(request, 'restaurants.html', context)
-
-
 # same login for both customer and restaurant
 AUTH_COOKIE_KEY = "authenticator"
 
@@ -193,3 +182,16 @@ def reservation_history(request):
     context['username'] = get_user_info(request)
     return render(request, 'reservation-history.html', context)
 
+
+def restaurant_search(request):
+    context = {}
+    context['username'] = get_user_info(request)
+    search_query = request.GET.get('query', "")
+    if search_query:
+        url = settings.EXP_LAYER_URL + "/restaurants/search/"
+    else:
+        url = settings.EXP_LAYER_URL + "restaurants/all/"
+    data = requests.get(url, {'search_query': search_query}).json()
+    # TODO parse the returned json to get restaurant info
+    context['restaurants'] = data['result']
+    return render(request, 'restaurant-search.html', context)
