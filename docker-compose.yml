@@ -12,15 +12,25 @@ es:
    ports:
       - "9200:9200"
 
-kafka_es_batch:
+reservation_consumer:
    image: tp33/django-docker:1.3
-   container_name: kafka_es_batch
+   container_name: reservation_consumer
    volumes:
-      - ./kafka_es_batch:/app
+      - ./reservation_consumer:/app
    links:
       - kafka:kafka
       - es:es
-   command: bash -c "python k_e_batch.py"
+   command: bash -c "python reservation_consumer.py"
+
+restaurant_consumer:
+   image: tp33/django-docker:1.3
+   container_name: restaurant_consumer
+   volumes:
+      - ./restaurant_consumer:/app
+   links:
+      - kafka:kafka
+      - es:es
+   command: bash -c "python restaurant_consumer.py"
 
 models:
    container_name: tabook-isa-models
