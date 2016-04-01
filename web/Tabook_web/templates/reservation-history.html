@@ -14,14 +14,14 @@
 
                     <!-- Sidebar -->
                     <section class="box">
-{#                        <header>#}
-{#                            <h3>Filter your reservation by ###</h3>#}
-{#                        </header>#}
-{#                        <a href="{% url 'create_reservation' %}" class="button alt">Make a Reservation</a>#}
+                        {#                        <header>#}
+                        {#                            <h3>Filter your reservation by ###</h3>#}
+                        {#                        </header>#}
+                        {#                        <a href="{% url 'create_reservation' %}" class="button alt">Make a Reservation</a>#}
 
-{#                        <footer>#}
-{#                            <a href="#" class="button alt">Rate</a>#}
-{#                        </footer>#}
+                        {#                        <footer>#}
+                        {#                            <a href="#" class="button alt">Rate</a>#}
+                        {#                        </footer>#}
                     </section>
 
                 </div>
@@ -37,6 +37,7 @@
                         <table>
                             <tr>
                                 <th>id</th>
+                                <th>table id</th>
                                 <th>status</th>
                                 <th>from</th>
                                 <th>to</th>
@@ -45,6 +46,7 @@
                             {% for res in reservations %}
                                 <tr>
                                     <td>{{ res.id }}</td>
+                                    <th>{{ res.table }}</th>
                                     <td>{{ res.status }}</td>
                                     <td>{{ res.start_time }}</td>
                                     <td>{{ res.end_time }}</td>

@@ -18,7 +18,7 @@ class Command(BaseCommand):
                 reservation_list = r['result']
                 producer = KafkaProducer(bootstrap_servers='kafka:9092')
                 for reservation in reservation_list:
-                    producer.send('new-listing-topic', json.dumps(reservation).encode('utf-8'))
+                    producer.send('new-listings-topic', json.dumps(reservation).encode('utf-8'))
             else:
                 self.stdout('models layer not ready')
                 self.handle(*args, **options)
@@ -27,6 +27,5 @@ class Command(BaseCommand):
             self.stdout(e)
             self.stdout('exception')
             self.handle(*args, **options)
-        # pass
 
         self.stdout.write("Finish")

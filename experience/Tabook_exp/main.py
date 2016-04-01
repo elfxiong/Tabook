@@ -47,7 +47,6 @@ def create_customer(request):
     else:
         request_url = settings.MODELS_LAYER_URL + "api/customers/create/"
         response = requests.post(request_url, data=request.POST)
-        print(response)
         r = response.json()  # decode json object response
         if r['success']:
             # new customer created
