@@ -335,7 +335,9 @@ def create_reservation(request):
         if form.is_valid():
             res = form.save()
             content['success'] = True
-            content['reservation'] = {'id': res.id, 'created': res.created}
+            table = res.table
+            restaurant = table.restaurant
+            content['reservation'] = {'id': res.id, 'created': res.created, 'restaurant_name': restaurant.restaurant_name}
         else:
             content['result'] = "Failed to create a new reservation."
             content['html'] = form.errors

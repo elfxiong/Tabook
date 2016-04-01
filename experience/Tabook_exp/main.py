@@ -283,6 +283,7 @@ def create_reservation(request):
                 new_listing['customer_id'] = r['user']['id']
                 new_listing['created_time'] = reservation_info['created'] # right?
                 new_listing['reservation_id'] = reservation_info['id']
+                new_listing['restaurant_name'] = reservation_info['restaurant_name']
                 producer.send('new-listings-topic', json.dumps(new_listing).encode('utf-8'))
 
             else:
