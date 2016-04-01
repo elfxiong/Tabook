@@ -17,7 +17,7 @@ def get_restaurant(request):
 def create_restaurant(request):
     content = {"success": False}
     if request.method != "POST":
-        content["result"] = "GET Request Recieved. Expected POST."
+        content["result"] = "GET Request Received. Expected POST."
     else:
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
         response = requests.post(request_url, data=request.POST)  # POST.dict() or POST?
@@ -26,7 +26,8 @@ def create_restaurant(request):
         if r['success']:
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
-            r = requests.post(url, data={'user': data, 'username': request.POST['username'], 'password': request.POST['password']}).json()
+            r = requests.post(url, data={'user': data, 'username': request.POST['username'],
+                                         'password': request.POST['password']}).json()
 
             if r['success']:
                 content['success'] = True
@@ -53,7 +54,8 @@ def create_customer(request):
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
             print(data)
-            r = requests.post(url, data={'user': data, 'username': request.POST['username'], 'password': request.POST['password']}).json()
+            r = requests.post(url, data={'user': data, 'username': request.POST['username'],
+                                         'password': request.POST['password']}).json()
             if r['success']:
                 content['success'] = True
                 content['auth'] = r['auth']
@@ -94,14 +96,28 @@ def get_table_status(request):
     return HttpResponse(r.text)
 
 
+def all_restaurants(request):
+    url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
+    r = requests.get(url).json()
+    return JsonResponse(r)
+
+
 # search by location, price, category, restaurant name
 def search_restaurant(request):
     # request.GET
-    request_url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
-    req = urllib.request.Request(request_url, method='GET')
-    resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-    restaurants = json.loads(resp_json)
-    return JsonResponse(restaurants)
+    # request_url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
+    # req = urllib.request.Request(request_url, method='GET')
+    # resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+    # r = requests.get(url)
+    # restaurants = json.loads(resp_json)
+    content = {'success': False}
+    query = request.GET.get('query', '')
+    es = Elasticsearch(['es'])
+    result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
+    content['success'] = True
+    content['result'] = result
+    # content['result'] = "searhresult"
+    return JsonResponse(content)
 
 
 # generate recommendations nearby you
@@ -182,7 +198,8 @@ def login(request):
             # user authenticated
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
-            r = requests.post(url, data={'user': data, 'username': request.POST['username'], 'password': request.POST['password']}).json()
+            r = requests.post(url, data={'user': data, 'username': request.POST['username'],
+                                         'password': request.POST['password']}).json()
             if r['success']:
                 content['success'] = True
                 content['auth'] = r['auth']
@@ -243,7 +260,7 @@ def create_reservation(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        # AUTHETICATE USER (get customer ID)
+        # AUTHENTICATE USER (get customer ID)
         authenticator = request.POST['authenticator']
         if not authenticator:
             return "No auth Anonymous"
@@ -253,23 +270,23 @@ def create_reservation(request):
             url = settings.MODELS_LAYER_URL + "api/reservations/create/"
             dt = json.loads(request.POST['reservation_details'])
             params = dt
-            #print(r['user']['id'])
+            # print(r['user']['id'])
             params['customer'] = r['user']['id']
             content = requests.post(url, params).json()
             if content['success']:
                 # add listing into kafka
                 reservation_info = content['reservation']
-                #reservation_info = json.load(content['reservation'])
+                # reservation_info = json.load(content['reservation'])
                 producer = KafkaProducer(bootstrap_servers='kafka:9092')
-                new_listing = dt #containing table, start_time, end_time TODO: need created_time to be returned back here
+                new_listing = dt  # containing table, start_time, end_time TODO: need created_time to be returned back here
                 new_listing['customer_id'] = r['user']['id']
-                new_listing['created_time'] = reservation_info['created'] # right?
+                new_listing['created_time'] = reservation_info['created']  # right?
                 new_listing['reservation_id'] = reservation_info['id']
                 new_listing['restaurant_name'] = reservation_info['restaurant_name']
                 producer.send('new-listings-topic', json.dumps(new_listing).encode('utf-8'))
 
             else:
-                #not be able to add it to the database
+                # failed to add it to the database
                 return JsonResponse(content)
         else:
             content['result'] = "User not authenticated."
@@ -287,8 +304,8 @@ def search_reservation(request):
         result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
         content['success'] = True
         content['search_result'] = result
-        #test
-        HttpResponse(content)
+        # test
+        # HttpResponse(content)
     return JsonResponse(content)
 
 

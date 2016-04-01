@@ -61,9 +61,8 @@ def restaurant_page(request, id):
             print(f.errors)
             pass
     else:
-        #TODO: implement next redirect
+        # TODO: implement next redirect
         return HttpResponseRedirect(reverse('login_page'))
-
 
     context['username'] = get_user_info(request)
     return render(request, 'restaurant.html', context)
@@ -188,13 +187,14 @@ def restaurant_search(request):
     context['username'] = get_user_info(request)
     search_query = request.GET.get('query', "")
     if search_query != "":
-        url = settings.EXP_LAYER_URL + "/restaurants/search/"
+        url = settings.EXP_LAYER_URL + "restaurants/search/"
     else:
         url = settings.EXP_LAYER_URL + "restaurants/all/"
 
-    r = requests.get(url, {'search_query': search_query}).json()
+    r = requests.get(url, {'query': search_query}).json()
     if r['success']:
         # TODO parse the returned json to get restaurant info
+        # context['result'] = r['result']
         context['restaurants'] = r['result']
         context['query'] = search_query
     else:
