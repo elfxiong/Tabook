@@ -287,8 +287,6 @@ def search_reservation(request):
         result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
         content['success'] = True
         content['search_result'] = result
-        #test
-        HttpResponse(content)
     return JsonResponse(content)
 
 
