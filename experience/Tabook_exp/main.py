@@ -47,7 +47,6 @@ def create_customer(request):
     else:
         request_url = settings.MODELS_LAYER_URL + "api/customers/create/"
         response = requests.post(request_url, data=request.POST)
-        print(response)
         r = response.json()  # decode json object response
         if r['success']:
             # new customer created
@@ -281,7 +280,7 @@ def create_reservation(request):
                 new_listing = dt  # containing table, start_time, end_time TODO: need created_time to be returned back here
                 new_listing['customer_id'] = r['user']['id']
                 new_listing['created_time'] = reservation_info['created']  # right?
-                #new_listing['reservation_id'] = reservation_info['id']
+                new_listing['id'] = reservation_info['id']
                 new_listing['restaurant_name'] = reservation_info['restaurant_name']
                 producer.send('new-listings-topic', json.dumps(new_listing).encode('utf-8'))
 

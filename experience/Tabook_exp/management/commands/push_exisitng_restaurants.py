@@ -11,25 +11,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # time.sleep(10)
-        url = settings.MODELS_LAYER_URL + "api/reservations/filter/"
-        try:
-            r = requests.get(url).json()
-            if r['success']:
-                reservation_list = r['result']
-                producer = KafkaProducer(bootstrap_servers='kafka:9092')
-                for reservation in reservation_list:
-                    producer.send('new-listings-topic', json.dumps(reservation).encode('utf-8'))
-            else:
-                self.stdout('models layer not ready')
-                self.handle(*args, **options)
-        except Exception as e:
-            # TODO retry
-            self.stdout(e)
-            self.stdout('exception')
-            self.handle(*args, **options)
-        # pass
-        self.stdout.write("Finish Reservations")
-
         url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
         try:
             r = requests.get(url).json()
@@ -48,4 +29,4 @@ class Command(BaseCommand):
             self.handle(*args, **options)
         # pass
 
-        self.stdout.write("Finish Restaurants")
+        self.stdout.write("Finish")
