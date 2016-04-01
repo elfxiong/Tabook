@@ -44,7 +44,7 @@ exp:
       - "8002:8000"
    volumes:
       - ./experience:/app
-   command: bash -c "pip install requests && mod_wsgi-express start-server --reload-on-changes ./Tabook_exp/wsgi.py"
+   command: bash -c "pip install requests && sleep 10s && python manage.py pushexistinglistings && mod_wsgi-express start-server --reload-on-changes ./Tabook_exp/wsgi.py"
 
 web:
    container_name: tabook-isa-web
@@ -56,4 +56,3 @@ web:
    volumes:
       - ./web:/app
    command: bash -c "pip install requests && mod_wsgi-express start-server --url-alias /static /app/Tabook_web/static --reload-on-changes ./Tabook_web/wsgi.py"
-
