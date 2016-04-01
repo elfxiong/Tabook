@@ -8,15 +8,12 @@ from .models import *
 
 
 # customer
-# TODO: override save functions in model class so that we can save in encoded pwd instead of plain text (done)
-# TODO: updat function: password need to be encoded
 
 def create_customer(request):
     content = {'success': False}
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        # print(request.POST)
         form = CustomerCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)  # save the fields to a user object but not save to the database
@@ -34,7 +31,6 @@ def create_customer(request):
         else:
             content['result'] = "Form is invalid. Failed to create a new customer"
             content['html'] = form.errors
-    print("content:" + str(content))
     return JsonResponse(content)
 
 
@@ -89,7 +85,6 @@ def create_restaurant(request):
     if request.method != 'POST':
         content['result'] = "Invalid request method. Expected POST."
     else:
-        print(request.POST)
         form = RestaurantCreationForm(request.POST)
         if form.is_valid():
             restaurant = form.save(commit=False)
@@ -108,7 +103,6 @@ def create_restaurant(request):
         else:
             content['result'] = "Failed to create a new restaurant"
             content['html'] = form.errors
-    print(content, '  test content')
     return JsonResponse(content)
 
 
@@ -253,7 +247,6 @@ def create_authenticator(request):
     else:
         content = check_password_helper(content, request.POST['username'], request.POST['password'])
         if content['success']:
-            print(request.POST)
             user = json.loads(request.POST['user'])
             if user['type'] == Authenticator.CUSTOMER:
                 authenticator = Authenticator.objects.create(user_id=user['id'],
@@ -283,17 +276,9 @@ def delete_authenticator(request):
     else:
         authenticator = request.POST['authenticator']
         auth = Authenticator.objects.filter(token=authenticator)
-        # test
-        print('before deleting the auth:', len(auth))
-        #####
         if len(auth) > 0:
             a = auth.first()
             a.delete()
-        # test
-        auth = Authenticator.objects.filter(token=authenticator)
-        print('after deleting the auth: ', len(auth))
-        #####
-
         content['success'] = True
     return JsonResponse(content)
 
@@ -366,7 +351,6 @@ def get_reservation(request, id):
                 result[field_name] = getattr(user, field_name)
             content['result'] = result
             content["success"] = True
-        print('model content: ', content)
     return JsonResponse(content)
 
 
@@ -401,7 +385,6 @@ def filter_reservation(request):
     if request.method != 'GET':
         content['result'] = "Invalid request method. Expected GET."
     else:
-        print('GET: ', request.GET)
         parameters = ['customer', 'id', 'status', 'created', 'start_time', 'end_time', 'table']
         query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
         reservations = Reservation.objects.filter(**query_attrs)
@@ -412,5 +395,4 @@ def filter_reservation(request):
             for r in content['result']:
                 r['customer'] = r['customer'].id
                 r['table'] = r['table'].id
-    print('after filter:', content)
     return JsonResponse(content)
