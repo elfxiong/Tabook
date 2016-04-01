@@ -34,7 +34,6 @@ def restaurant_page(request, id):
     url = settings.EXP_LAYER_URL + "restaurants/"
     data = requests.get(url, params={'id': restaurant_id})
     restaurant = data.json()['result'][0]
-    # print(restaurant)
     context['restaurant'] = restaurant
 
     # get restaurant tables
@@ -56,7 +55,6 @@ def restaurant_page(request, id):
                                    'end_time': str(datetime.datetime.now())}
             data = {'authenticator': authenticator, 'reservation_details': json.dumps(reservation_details)}
             r = requests.post(url, data).json()
-            print()
             pass
             # TODO
         else:
@@ -160,8 +158,6 @@ def logout(request):
     url = settings.EXP_LAYER_URL + "auth/logout/"
     data = {"authenticator": authenticator}
     r = requests.post(url, data=data)
-    # if not r['success']:
-
     response = HttpResponseRedirect(reverse("homepage"))
     response.delete_cookie(AUTH_COOKIE_KEY)
     return response
@@ -187,10 +183,11 @@ def restaurant_search(request):
     context = {}
     context['username'] = get_user_info(request)
     search_query = request.GET.get('query', "")
-    if search_query:
+    if search_query != "":
         url = settings.EXP_LAYER_URL + "/restaurants/search/"
     else:
         url = settings.EXP_LAYER_URL + "restaurants/all/"
+
     r = requests.get(url, {'search_query': search_query}).json()
     if r['success']:
         # TODO parse the returned json to get restaurant info

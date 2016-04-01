@@ -7,7 +7,6 @@ from kafka import KafkaProducer
 from elasticsearch import Elasticsearch
 
 
-# TODO: call create_authenticator function when register
 def get_restaurant(request):
     url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
     id = request.GET['id']
@@ -22,21 +21,9 @@ def create_restaurant(request):
     else:
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
         response = requests.post(request_url, data=request.POST)  # POST.dict() or POST?
-        # content = json.loads(response.content.decode('utf-8'))
-        print(response.content, "test response")
         r = json.loads(response.content.decode('utf-8'))
 
         if r['success']:
-            # Models layer failed
-            # error = {}
-            # if content['result'] == "Invalid request method. Expected POST.":
-            #     error["type"] = "GET Request Recieved. Expected POST."
-            #     return JsonResponse(error)
-            # if content["result"] == "Failed to create a new restaurant":
-            #     error["type"] = "Restaurant creation failed."
-            # return JsonResponse(error)
-            # new customer created
-
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
             r = requests.post(url, data={'user': data, 'username': request.POST['username'], 'password': request.POST['password']}).json()
@@ -46,7 +33,6 @@ def create_restaurant(request):
                 content['auth'] = r['auth']
             else:
                 content['result'] = 'Models layer failed: ' + r['result']
-                # content['result'] = "Models layer failed: " + content['result']
         else:
             content['result'] = "Models layer failed: " + r['result']
 
@@ -62,7 +48,6 @@ def create_customer(request):
         response = requests.post(request_url, data=request.POST)
         print(response)
         r = response.json()  # decode json object response
-        # content = json.loads(response.content.decode('utf-8'))
         if r['success']:
             # new customer created
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
@@ -106,7 +91,6 @@ def get_table_status(request):
     d = {'table_id': table_id, 'date': date}
     request_url = settings.MODELS_LAYER_URL + "api/restaurants/table_status/"
     r = requests.get(request_url, params=d)
-
     return HttpResponse(r.text)
 
 
@@ -124,7 +108,6 @@ def search_restaurant(request):
 def get_recommendations(request):
     url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
     r = requests.get(url)
-    # print("rec: " + str(r.json()))
     return JsonResponse(r.json())
 
 
@@ -195,7 +178,6 @@ def login(request):
         url = settings.MODELS_LAYER_URL + "api/auth/check_password/"
         data = {'password': request.POST['password'], 'username': request.POST['username']}
         r = requests.get(url, params=data).json()
-        # print(r)
         if r['success']:
             # user authenticated
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
@@ -238,7 +220,6 @@ def authenticate(request):
         content['result'] = "Invalid request method. Expected GET."
     else:
         content = get_user(request.GET.get('authenticator', ""))
-    # print(content)
     return JsonResponse(content)
 
 
