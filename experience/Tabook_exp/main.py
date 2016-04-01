@@ -22,6 +22,14 @@ def create_restaurant(request):
         request_url = settings.MODELS_LAYER_URL + "api/restaurants/create/"
         response = requests.post(request_url, data=request.POST)  # POST.dict() or POST?
         r = json.loads(response.content.decode('utf-8'))
+        if r['success']:
+            # reservation_info = json.load(content['reservation'])
+            producer = KafkaProducer(bootstrap_servers='kafka:9092')
+            new_listing = request.POST
+            new_listing['restaurant_id'] = r['user']['id']
+            producer.send('new-restaurant-topic', json.dumps(new_listing).encode('utf-8'))
+
+
 
         if r['success']:
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
@@ -103,19 +111,12 @@ def all_restaurants(request):
 
 # search by location, price, category, restaurant name
 def search_restaurant(request):
-    # request.GET
-    # request_url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
-    # req = urllib.request.Request(request_url, method='GET')
-    # resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-    # r = requests.get(url)
-    # restaurants = json.loads(resp_json)
     content = {'success': False}
     query = request.GET.get('query', '')
     es = Elasticsearch(['es'])
-    result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
+    result = es.search(index='restaurant_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
     content['success'] = True
     content['result'] = result
-    # content['result'] = "searhresult"
     return JsonResponse(content)
 
 
