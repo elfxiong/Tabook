@@ -60,6 +60,10 @@ def restaurant_page(request, id):
         else:
             print(f.errors)
             pass
+    else:
+        #TODO: implement next redirect
+        return HttpResponseRedirect(reverse('login_page'))
+
 
     context['username'] = get_user_info(request)
     return render(request, 'restaurant.html', context)

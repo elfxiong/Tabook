@@ -24,7 +24,6 @@ def create_customer(request):
             if not cus and not res:
                 user.save()  # save to the database with hashed password
                 content['success'] = True
-                # content['id'] = user.id
                 content['user'] = {'id': user.id, 'type': Authenticator.CUSTOMER}
             else:
                 content['result'] = 'Username has already existed. Failed to create a new customer.'
