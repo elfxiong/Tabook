@@ -36,9 +36,10 @@ def create_restaurant(request):
             #     error["type"] = "Restaurant creation failed."
             # return JsonResponse(error)
             # new customer created
+
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
-            r = requests.post(url, data={'user': data}).json()
+            r = requests.post(url, data={'user': data, 'username': request.POST['username'], 'password': request.POST['password']}).json()
 
             if r['success']:
                 content['success'] = True
@@ -67,7 +68,7 @@ def create_customer(request):
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
             print(data)
-            r = requests.post(url, data={'user': data}).json()
+            r = requests.post(url, data={'user': data, 'username': request.POST['username'], 'password': request.POST['password']}).json()
             if r['success']:
                 content['success'] = True
                 content['auth'] = r['auth']
@@ -199,7 +200,7 @@ def login(request):
             # user authenticated
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
-            r = requests.post(url, data={'user': data}).json()
+            r = requests.post(url, data={'user': data, 'username': request.POST['username'], 'password': request.POST['password']}).json()
             if r['success']:
                 content['success'] = True
                 content['auth'] = r['auth']

@@ -251,24 +251,28 @@ def create_authenticator(request):
     if request.method != 'POST':
         content['result'] = 'Invalid request method. Expected POST.'
     else:
-        print('test')
-        print(request.POST)
-        user = json.loads(request.POST['user'])
-        if user['type'] == Authenticator.CUSTOMER:
-            authenticator = Authenticator.objects.create(user_id=user['id'],
-                                                         user_type=Authenticator.CUSTOMER)
-            content['success'] = True
-            content['auth'] = authenticator.token
-            return JsonResponse(content)
+        content = check_password_helper(content, request.POST['username'], request.POST['password'])
+        if content['success']:
+            print(request.POST)
+            user = json.loads(request.POST['user'])
+            if user['type'] == Authenticator.CUSTOMER:
+                authenticator = Authenticator.objects.create(user_id=user['id'],
+                                                             user_type=Authenticator.CUSTOMER)
+                content['success'] = True
+                content['auth'] = authenticator.token
+                return JsonResponse(content)
 
-        elif user['type'] == Authenticator.RESTAURANT:
-            authenticator = Authenticator.objects.create(user_id=user['id'],
-                                                         user_type=Authenticator.RESTAURANT)
-            content['success'] = True
-            content['auth'] = authenticator.token
-            return JsonResponse(content)
+            elif user['type'] == Authenticator.RESTAURANT:
+                authenticator = Authenticator.objects.create(user_id=user['id'],
+                                                             user_type=Authenticator.RESTAURANT)
+                content['success'] = True
+                content['auth'] = authenticator.token
+                return JsonResponse(content)
+            else:
+                content['result'] = 'Invalid user type.'
         else:
-            content['result'] = 'Invalid user type.'
+            #password did not checkout
+            pass
     return JsonResponse(content)
 
 
@@ -303,28 +307,31 @@ def check_password(request):
     else:
         username = request.GET['username']
         password = request.GET['password']
+        content = check_password_helper(content, username, password)
+    return JsonResponse(content)
 
-        cus = Customer.objects.filter(username=username).first()
-        if cus:
-            if hashers.check_password(password, cus.password):
+
+def check_password_helper(content, username, password):
+    cus = Customer.objects.filter(username=username).first()
+    if cus:
+        if hashers.check_password(password, cus.password):
+            content['success'] = True
+            content['result'] = 'Customer authenticated successfully.'
+            content['user'] = {'id': cus.id, 'type': Authenticator.CUSTOMER}
+        else:
+            content['result'] = 'Password does not matched.'
+    else:
+        res = Restaurant.objects.filter(username=username).first()
+        if res:
+            if hashers.check_password(password, res.password):
                 content['success'] = True
-                content['result'] = 'Customer authenticated successfully.'
-                content['user'] = {'id': cus.id, 'type': Authenticator.CUSTOMER}
+                content['result'] = 'Restaurant authenticated successfully.'
+                content['user'] = {'id': res.id, 'type': Authenticator.RESTAURANT}
             else:
                 content['result'] = 'Password does not matched.'
         else:
-            res = Restaurant.objects.filter(username=username).first()
-            if res:
-                if hashers.check_password(password, res.password):
-                    content['success'] = True
-                    content['result'] = 'Restaurant authenticated successfully.'
-                    content['user'] = {'id': res.id, 'type': Authenticator.RESTAURANT}
-                else:
-                    content['result'] = 'Password does not matched.'
-            else:
-                content['result'] = "Invalid username name or password."
-        return JsonResponse(content)
-
+            content['result'] = "Invalid username name or password."
+    return content
 
 def create_reservation(request):
     content = {'success': False}
