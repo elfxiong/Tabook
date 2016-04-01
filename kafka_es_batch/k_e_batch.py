@@ -4,18 +4,19 @@ import json
 
 consumer = None
 es = None
-print('test')
+
 while not consumer or not es:
 	try:
-		consumer  = KafkaConsumer('new-listing-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
+		consumer  = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
 		es = Elasticsearch(['es'])
 	except:
 		pass
-
+print('test')
 for message in consumer:
+	print("in for loop")
 	new_listing = json.loads((message.value).decode('utf-8'))
 	print(new_listing)
-	customer_id = new_listing['id']
+	customer_id = new_listing['customer_id']
 	table_id = new_listing['table']
 	reservation_id = new_listing['reservation_id']
 	start_time = new_listing['start_time']
@@ -23,4 +24,4 @@ for message in consumer:
 	created_time = new_listing['created_time']
 	some_new_listing = { 'customer_id':customer_id, 'table_id':table_id,'start_time':start_time, 'end_time': end_time, 'created_time':created_time}
 	es.index(index='listing_index', doc_type='listing', id=reservation_id, body=some_new_listing)
-	es.indeices.refresh(index='listing_index')
+	es.indices.refresh(index='listing_index')

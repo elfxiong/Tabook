@@ -279,7 +279,7 @@ def create_reservation(request):
                 reservation_info = content['reservation']
                 #reservation_info = json.load(content['reservation'])
                 producer = KafkaProducer(bootstrap_servers='kafka:9092')
-                new_listing = dt #containing table, start_time, end_time TODO: need created_time to be returned back hear
+                new_listing = dt #containing table, start_time, end_time TODO: need created_time to be returned back here
                 new_listing['customer_id'] = r['user']['id']
                 new_listing['created_time'] = reservation_info['created'] # right?
                 new_listing['reservation_id'] = reservation_info['id']
