@@ -67,17 +67,6 @@ def restaurant_page(request, id):
     return render(request, 'restaurant.html', context)
 
 
-def restaurant_list(request):
-    context = {}
-    url = settings.EXP_LAYER_URL + "restaurants/all/"
-    data = requests.get(url).json()
-    # print(data.json())
-    context['restaurants'] = data['result']
-
-    context['username'] = get_user_info(request)
-    return render(request, 'restaurants.html', context)
-
-
 # same login for both customer and restaurant
 AUTH_COOKIE_KEY = "authenticator"
 
@@ -193,26 +182,20 @@ def reservation_history(request):
     context['username'] = get_user_info(request)
     return render(request, 'reservation-history.html', context)
 
-# def create_reservation(request):
-#     context = {}
-#     authenticator = request.COOKIES.get(AUTH_COOKIE_KEY, "")
-#     if not authenticator:
-#         return HttpResponseRedirect(reverse('login_page'))
-#
-#     if request.method != 'POST':
-#         return HttpResponse("Invalid request method")
-#
-#     f = ReservationForm(request.POST)
-#     context['form'] = f
-#     if f.is_valid():
-#         url = settings.EXP_LAYER_URL + "customers/create_reservation/"
-#         reservation_details = {'table': f.clened_data['table'], 'start_time': f.cleaned_data['start_time'],
-#                                'end_time': f.cleaned_data['end_time']}
-#         data = {'authenticator': authenticator, 'reservation_details': json.dumps(reservation_details)}
-#         r = requests.post(url, data).json()
-#         print(r)
-#         pass
-#         # TODO
-#     else:
-#         pass
-#     return render(request, 'create_reservation.html', context)
+
+def restaurant_search(request):
+    context = {}
+    context['username'] = get_user_info(request)
+    search_query = request.GET.get('query', "")
+    if search_query:
+        url = settings.EXP_LAYER_URL + "/restaurants/search/"
+    else:
+        url = settings.EXP_LAYER_URL + "restaurants/all/"
+    r = requests.get(url, {'search_query': search_query}).json()
+    if r['success']:
+        # TODO parse the returned json to get restaurant info
+        context['restaurants'] = r['result']
+        context['query'] = search_query
+    else:
+        pass  # TODO error?
+    return render(request, 'restaurant-search.html', context)

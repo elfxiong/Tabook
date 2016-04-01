@@ -28,9 +28,9 @@
                 {% endif %}
                 {% if username.username %}
                     <li class="{% active_page request "reservation_history" %}">
-                    <a href="{% url "reservation_history" %}">
-                        {{ username.username }}'s Reservation History
-                    </a>
+                        <a href="{% url "reservation_history" %}">
+                            {{ username.username }}'s Reservation History
+                        </a>
                     </li>
                     <li class="{% active_page request "logout" %}">
                         <a href="{% url "logout" %}">
@@ -38,14 +38,16 @@
                         </a>
                     </li>
                 {% endif %}
-
+                <li>
+                    <form class="form-inline" method="get" action="{% url "restaurant_list" %}">
+                        <input type="text" class="form-control" placeholder="I want to eat at..." name="query">
+                        <button type="submit" class="btn">Search</button>
+                    </form>
+                </li>
 
             </ul>
             {#                <li><input type="text" class="" style="text-area: 50em" placeholder="Search"></li>#}
 
-
-            <div style="text-align: center">
-            </div>
         </nav>
     </div>
 </div>

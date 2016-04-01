@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^auth/logout/$', logout),
     url(r'^auth/user/$', authenticate),
     url(r'^restaurants/all/$', search_restaurant),
+    url(r'^restaurants/search/$', search_restaurant),
     url(r'^restaurants/(?P<id>\d+)/$', get_restaurant),
     url(r'^restaurants/create_restaurant/$', create_restaurant),
     url(r'^restaurants/table_status/$', get_table_status),
