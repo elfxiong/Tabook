@@ -59,4 +59,4 @@ for message in consumer:
     }
 
     es.index(index='restaurant_index', doc_type='listing', id=resaurant_id, body=some_new_listing)
-    es.indices.refresh(index='listing_index')
+    es.indices.refresh(index='restaurant_index')
