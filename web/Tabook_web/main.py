@@ -182,19 +182,40 @@ def reservation_history(request):
     return render(request, 'reservation-history.html', context)
 
 
+def reservation_search(request):
+    context = {}
+    context['username'] = get_user_info(request)
+    customer_id = context['username']['id']
+    search_query = request.GET.get('query', "")
+    if search_query != "":
+        url = settings.EXP_LAYER_URL + "customers/search_reservation/"
+
+    else:
+        url = settings.EXP_LAYER_URL + "customers/reservation_history/"
+
+    r = requests.get(url, {'query': search_query, 'customer_id': customer_id}).json()
+    if r['success']:
+        context['reservations'] = r['result']
+        context['query'] = search_query
+    else:
+        pass  # TODO error?
+    return render(request, 'reservation-history.html', context)
+
+
 def restaurant_search(request):
     context = {}
     context['username'] = get_user_info(request)
+
     search_query = request.GET.get('query', "")
     if search_query != "":
         url = settings.EXP_LAYER_URL + "restaurants/search/"
+
     else:
         url = settings.EXP_LAYER_URL + "restaurants/all/"
 
     r = requests.get(url, {'query': search_query}).json()
     if r['success']:
         # TODO parse the returned json to get restaurant info
-        # context['result'] = r['result']
         context['restaurants'] = r['result']
         context['query'] = search_query
     else:

@@ -14,17 +14,14 @@
 
                     <!-- Sidebar -->
                     <section class="box">
-                        {#                        <header>#}
-                        {#                            <h3>Filter your reservation by ###</h3>#}
-                        {#                        </header>#}
-                        {#                        <a href="{% url 'create_reservation' %}" class="button alt">Make a Reservation</a>#}
-
-                        {#                        <footer>#}
-                        {#                            <a href="#" class="button alt">Rate</a>#}
-                        {#                        </footer>#}
+                        <form class="form-inline" method="get" action="{% url "reservation_search" %}">
+                            <input type="text" class="form-control" placeholder="Search Reservations" name="query">
+                            <button type="submit" class="btn">Search</button>
+                        </form>
                     </section>
 
                 </div>
+
                 <div class="8u 12u(mobile) important(mobile)">
 
                     <!-- Content -->
