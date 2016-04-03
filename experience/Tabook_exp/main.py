@@ -14,6 +14,7 @@ def get_restaurant(request):
     return JsonResponse(r.json())
 
 
+# TODO This method needs cleanup. Or we just remove it because we don't need it.
 def create_restaurant(request):
     content = {"success": False}
     if request.method != "POST":
@@ -112,7 +113,7 @@ def search_restaurant(request):
     content = {'success': False}
     query = request.GET['query']
     es = Elasticsearch(['es'])
-    es.indices.refresh(index='restaurant_index')
+    # es.indices.refresh(index='restaurant_index')
     result = es.search(index='restaurant_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
     content['success'] = True
     content['result'] = [hit['_source'] for hit in result['hits']['hits']]
