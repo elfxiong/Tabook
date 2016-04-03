@@ -13,7 +13,7 @@ while not consumer or not es:
 		pass
 print('test')
 for message in consumer:
-	print("in for loop")
+	print("in reservation for loop")
 	new_listing = json.loads((message.value).decode('utf-8'))
 	print(new_listing)
 	# customer_id = new_listing['customer_id']
