@@ -34,13 +34,15 @@ class Command(BaseCommand):
             self.stdout.write('exception in reservation')
             self.stdout.write(str(e))
             self.handle(*args, **options)
+
         # pass
+        es.indices.refresh(index="listing_index")
         self.stdout.write("Finish Reservations")
 
         url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
         try:
             r = requests.get(url).json()
-            # self.stdout.write(str(r))
+            self.stdout.write(str(r))
             if r['success']:
                 restaurant_list = r['result']
                 # producer = KafkaProducer(bootstrap_servers='kafka:9092')
@@ -57,5 +59,5 @@ class Command(BaseCommand):
             self.stdout.write('exception')
             self.handle(*args, **options)
         # pass
-
+        es.indices.refresh(index="restaurant_index")
         self.stdout.write("Finish Restaurants")

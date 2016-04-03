@@ -29,8 +29,6 @@ def create_restaurant(request):
             new_listing['restaurant_id'] = r['user']['id']
             producer.send('new-restaurant-topic', json.dumps(new_listing).encode('utf-8'))
 
-
-
         if r['success']:
             url = settings.MODELS_LAYER_URL + "api/auth/authenticator/create/"
             data = json.dumps(r['user'])
@@ -112,11 +110,12 @@ def all_restaurants(request):
 # search by location, price, category, restaurant name
 def search_restaurant(request):
     content = {'success': False}
-    query = request.GET.get('query', '')
+    query = request.GET['query']
     es = Elasticsearch(['es'])
+    es.indices.refresh(index='restaurant_index')
     result = es.search(index='restaurant_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
     content['success'] = True
-    content['result'] = result
+    content['result'] = [hit['_source'] for hit in result['hits']['hits']]
     return JsonResponse(content)
 
 
@@ -299,7 +298,7 @@ def search_reservation(request):
     if request.method != 'GET':
         content['result'] = "Invalid request method. Expected GET."
     else:
-        query = request.GET['search_query']
+        query = request.GET['query']
         es = Elasticsearch(['es'])
         result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
         content['success'] = True

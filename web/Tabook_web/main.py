@@ -188,13 +188,13 @@ def restaurant_search(request):
     search_query = request.GET.get('query', "")
     if search_query != "":
         url = settings.EXP_LAYER_URL + "restaurants/search/"
+
     else:
         url = settings.EXP_LAYER_URL + "restaurants/all/"
 
     r = requests.get(url, {'query': search_query}).json()
     if r['success']:
         # TODO parse the returned json to get restaurant info
-        # context['result'] = r['result']
         context['restaurants'] = r['result']
         context['query'] = search_query
     else:
