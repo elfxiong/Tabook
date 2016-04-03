@@ -116,7 +116,7 @@ def get_restaurant(request, id):
             content["result"] = "restaurant not found"
         else:
             result = {}
-            for field_name in ['id', 'username', 'email', 'phone']:
+            for field_name in ['id', 'username', 'email', 'phone', 'restaurant_name']:
                 result[field_name] = getattr(user, field_name)
             content['result'] = result
             content["success"] = True
@@ -160,6 +160,7 @@ def filter_restaurant(request):
         content['success'] = True
         info = ['id', 'username', 'email', 'phone', 'address', 'restaurant_name']
         content['result'] = [{field: getattr(r, field) for field in info} for r in restaurants]
+
     return JsonResponse(content)
 
 
@@ -172,8 +173,11 @@ def filter_tables(request):
         query_attrs = {param: value for param, value in request.GET.items() if param in parameters}
         restaurants = Table.objects.filter(**query_attrs)
         content['success'] = True
-        info = ['id', 'restaurant_id', 'capacity', 'style', 'x_coordinate', 'y_coordinate']
+        info = ['id', 'restaurant', 'capacity', 'style', 'x_coordinate', 'y_coordinate']
         content['result'] = [{field: getattr(r, field) for field in info} for r in restaurants]
+        if content['result']:
+            for r in content['result']:
+                r['restaurant'] = r['restaurant'].id
     return JsonResponse(content)
 
 
