@@ -185,6 +185,7 @@ def reservation_history(request):
 def reservation_search(request):
     context = {}
     context['username'] = get_user_info(request)
+    customer_id = context['username']['id']
     search_query = request.GET.get('query', "")
     if search_query != "":
         url = settings.EXP_LAYER_URL + "customers/search_reservation/"
@@ -192,7 +193,7 @@ def reservation_search(request):
     else:
         url = settings.EXP_LAYER_URL + "customers/reservation_history/"
 
-    r = requests.get(url, {'query': search_query, 'username': context['username']}).json()
+    r = requests.get(url, {'query': search_query, 'customer_id': customer_id}).json()
     if r['success']:
         context['reservations'] = r['result']
         context['query'] = search_query
@@ -204,6 +205,7 @@ def reservation_search(request):
 def restaurant_search(request):
     context = {}
     context['username'] = get_user_info(request)
+
     search_query = request.GET.get('query', "")
     if search_query != "":
         url = settings.EXP_LAYER_URL + "restaurants/search/"

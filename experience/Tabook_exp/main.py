@@ -299,8 +299,23 @@ def search_reservation(request):
         content['result'] = "Invalid request method. Expected GET."
     else:
         query = request.GET['query']
+        customer_id = request.GET['customer_id']
         es = Elasticsearch(['es'])
-        result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
+        result = es.search(index='listing_index', body={"query" : {
+                                                            "filtered" : {
+                                                                "filter" : {
+                                                                    "match" : {
+                                                                        "customer" : customer_id
+                                                                    }
+                                                                },
+                                                                "query" : {
+                                                                    "query_string" : {
+                                                                        "query" : query
+                                                                    }
+                                                                }
+                                                            }
+                                                        }, 'size':10
+                                                        })
         content['success'] = True
         content['result'] = [hit['_source'] for hit in result['hits']['hits']]
     return JsonResponse(content)
