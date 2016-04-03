@@ -55,10 +55,10 @@ class Customer(User):
 
 
 class Restaurant(User):
-    restaurant_name = models.CharField(max_length=30, null=True, blank=True)  # Should this be unique(??)
-    address = models.CharField(max_length=200, null=True, blank=True)
-    price_range = models.PositiveSmallIntegerField(default=0, null=True, blank=True)  # number of dollar signs
-    category = models.CharField(max_length=30, default="unclassified", null=True, blank=True)
+    restaurant_name = models.CharField(max_length=30, blank=True, default="anonymous")  # Should this be unique(??)
+    address = models.CharField(max_length=200, blank=True, default="unknown")
+    price_range = models.PositiveSmallIntegerField(default=0, blank=True)  # number of dollar signs
+    category = models.CharField(max_length=30, default="unclassified", blank=True)
 
     def save(self, *args, **kwargs):
         hashed_password = hashers.make_password(self.password)
