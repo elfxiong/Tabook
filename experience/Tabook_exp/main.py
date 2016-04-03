@@ -302,7 +302,7 @@ def search_reservation(request):
         es = Elasticsearch(['es'])
         result = es.search(index='listing_index', body={'query': {'query_string': {'query': query}}, 'size': 10})
         content['success'] = True
-        content['search_result'] = result
+        content['result'] = [hit['_source'] for hit in result['hits']['hits']]
     return JsonResponse(content)
 
 

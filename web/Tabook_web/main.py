@@ -182,6 +182,25 @@ def reservation_history(request):
     return render(request, 'reservation-history.html', context)
 
 
+def reservation_search(request):
+    context = {}
+    context['username'] = get_user_info(request)
+    search_query = request.GET.get('query', "")
+    if search_query != "":
+        url = settings.EXP_LAYER_URL + "customers/search_reservation/"
+
+    else:
+        url = settings.EXP_LAYER_URL + "customers/reservation_history/"
+
+    r = requests.get(url, {'query': search_query, 'username': context['username']}).json()
+    if r['success']:
+        context['reservations'] = r['result']
+        context['query'] = search_query
+    else:
+        pass  # TODO error?
+    return render(request, 'reservation-history.html', context)
+
+
 def restaurant_search(request):
     context = {}
     context['username'] = get_user_info(request)
