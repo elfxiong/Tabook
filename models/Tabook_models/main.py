@@ -163,6 +163,24 @@ def filter_restaurant(request):
     return JsonResponse(content)
 
 
+def get_table(request, id):
+    content = {"success": False}
+    if request.method != 'GET':
+        content['result'] = "Invalid request method. Expected GET."
+    else:
+        try:
+            user = Table.objects.get(pk=id)
+        except Table.DoesNotExist:
+            content["result"] = "table not found"
+        else:
+            result = {}
+            for field_name in ['id', 'restaurant_id', 'capacity', 'style', 'x_coordinate', 'y_coordinate']:
+                result[field_name] = getattr(user, field_name)
+            content['result'] = result
+            content["success"] = True
+    return JsonResponse(content)
+
+
 def filter_tables(request):
     content = {'success': False}
     if request.method != 'GET':
@@ -263,7 +281,7 @@ def create_authenticator(request):
             else:
                 content['result'] = 'Invalid user type.'
         else:
-            #password did not checkout
+            # password did not checkout
             pass
     return JsonResponse(content)
 
@@ -317,6 +335,7 @@ def check_password_helper(content, username, password):
             content['result'] = "Invalid username name or password."
     return content
 
+
 def create_reservation(request):
     content = {'success': False}
     if request.method != 'POST':
@@ -328,7 +347,8 @@ def create_reservation(request):
             content['success'] = True
             table = res.table
             restaurant = table.restaurant
-            content['reservation'] = {'id': res.id, 'created': res.created, 'restaurant_name': restaurant.restaurant_name}
+            content['reservation'] = {'id': res.id, 'created': res.created,
+                                      'restaurant_name': restaurant.restaurant_name}
         else:
             content['result'] = "Failed to create a new reservation."
             content['html'] = form.errors
