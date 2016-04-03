@@ -20,12 +20,12 @@ class Command(BaseCommand):
                 for reservation in reservation_list:
                     producer.send('new-listings-topic', json.dumps(reservation).encode('utf-8'))
             else:
-                self.stdout('models layer not ready')
+                self.stdout.write('models layer not ready')
                 self.handle(*args, **options)
         except Exception as e:
             # TODO retry
             self.stdout(e)
-            self.stdout('exception')
+            self.stdout.write('exception')
             self.handle(*args, **options)
         # pass
         self.stdout.write("Finish Reservations")
@@ -35,16 +35,19 @@ class Command(BaseCommand):
             r = requests.get(url).json()
             if r['success']:
                 restaurant_list = r['result']
+                self.stdout.write(restaurant_list.__str__())
+
                 producer = KafkaProducer(bootstrap_servers='kafka:9092')
                 for restaurant in restaurant_list:
+                    self.stdout.write('restaurant being sent to restaurant')
                     producer.send('new-restaurant-topic', json.dumps(restaurant).encode('utf-8'))
             else:
-                self.stdout('models layer not ready')
+                self.stdout.write('models layer not ready')
                 self.handle(*args, **options)
         except Exception as e:
             # TODO retry
             self.stdout(e)
-            self.stdout('exception')
+            self.stdout.write('exception')
             self.handle(*args, **options)
         # pass
 
