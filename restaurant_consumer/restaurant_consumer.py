@@ -17,6 +17,6 @@ print('test')
 for message in consumer:
     print("restuanrt for loop")
     new_listing = json.loads((message.value).decode('utf-8'))
-	print(new_listing)
+    print(new_listing)
     es.index(index='restaurant_index', doc_type='listing', id=new_listing['id'], body=new_listing)
     es.indices.refresh(index='restaurant_index')

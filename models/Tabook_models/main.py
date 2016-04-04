@@ -351,8 +351,10 @@ def create_reservation(request):
             content['success'] = True
             table = res.table
             restaurant = table.restaurant
-            content['reservation'] = {'id': res.id, 'created': res.created,
-                                      'restaurant_name': restaurant.restaurant_name}
+            customer = res.customer.id
+            content['reservation'] = {'id': res.id, 'created': res.created, 'status':res.status, 'start_time':res.start_time,
+                                      'end_time':res.end_time, 'table':table.id, 'restaurant_name': restaurant.restaurant_name,
+                                      'customer':customer}
         else:
             content['result'] = "Failed to create a new reservation."
             content['html'] = form.errors

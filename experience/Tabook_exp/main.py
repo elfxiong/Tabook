@@ -278,11 +278,7 @@ def create_reservation(request):
                 reservation_info = content['reservation']
                 # reservation_info = json.load(content['reservation'])
                 producer = KafkaProducer(bootstrap_servers='kafka:9092')
-                new_listing = dt  # containing table, start_time, end_time TODO: need created_time to be returned back here
-                new_listing['customer'] = r['user']['id']
-                new_listing['created'] = reservation_info['created']  # right?
-                new_listing['id'] = reservation_info['id']
-                new_listing['restaurant_name'] = reservation_info['restaurant_name']
+                new_listing = reservation_info
                 producer.send('new-listings-topic', json.dumps(new_listing).encode('utf-8'))
 
             else:
@@ -317,6 +313,7 @@ def search_reservation(request):
                                                             }
                                                         }, 'size':10
                                                         })
+
         content['success'] = True
         content['result'] = [hit['_source'] for hit in result['hits']['hits']]
     return JsonResponse(content)

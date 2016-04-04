@@ -32,14 +32,14 @@ class Command(BaseCommand):
                             resp = requests.get(url,params={'id':reservation['table']}).json()
                             if resp['success']:
                                 table = resp['result'][0]
-                                self.stdout.write('talbe: ' + str(table))
+                                #self.stdout.write('talbe: ' + str(table))
                             #get restaurant
                         url = settings.MODELS_LAYER_URL + "api/restaurants/" + str(table['restaurant']) + '/'
                         try:
                             response = requests.get(url).json()
-                            self.stdout.write('response' + str(response))
+                            #self.stdout.write('response' + str(response))
                             restaurant_name = response['result']['restaurant_name']
-                            self.stdout.write(restaurant_name)
+                            #self.stdout.write(restaurant_name)
                         except Exception as e:
                             #self.stdout.write(str(e))
                             self.stdout.write('exception in filtering restaurant by id')
@@ -48,6 +48,7 @@ class Command(BaseCommand):
                         self.stdout.write('exception in filtering table by id')
 
                     reservation['restaurant_name'] = restaurant_name
+                    self.stdout.write(str(reservation))
                     es.index(index='listing_index', doc_type='listing', id=reservation['id'],
                              body=reservation)
                     # producer.send('new-listings-topic', json.dumps(reservation).encode('utf-8'))
