@@ -39,15 +39,17 @@
                                 <th>from</th>
                                 <th>to</th>
                                 <th>created</th>
+                                <th>restaurant</th>
                             </tr>
                             {% for res in reservations %}
                                 <tr>
                                     <td>{{ res.id }}</td>
                                     <th>{{ res.table }}</th>
                                     <td>{{ res.status }}</td>
-                                    <td>{{ res.start_time }}</td>
+                                    <td>{{ res.start_time }}   </td>
                                     <td>{{ res.end_time }}</td>
-                                    <td>{{ res.created }}</td>
+                                    <td>{{ res.created }}   </td>
+                                    <td>{{ res.restaurant_name }}</td>
                                 </tr>
                             {% endfor %}
                         </table>

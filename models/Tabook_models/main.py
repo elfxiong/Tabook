@@ -418,6 +418,8 @@ def filter_reservation(request):
         # manually change costumer id to be numeric
         if content['result']:
             for r in content['result']:
+                restaurant_name = r['table'].restaurant.restaurant_name
+                r['restaurant_name'] = restaurant_name
                 r['customer'] = r['customer'].id
                 r['table'] = r['table'].id
     return JsonResponse(content)
