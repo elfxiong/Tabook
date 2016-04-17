@@ -148,7 +148,7 @@ class RestaurantAPITestCase(TestCase):
         expected_json = {'result': [], 'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
-    def test_create_review_sucessful(self):
+    def test_create_review_successful(self):
         post_data = {'customer_id': 1, 'restaurant_id': 1,
                      'stars': "5", 'text': 'great food'}
         response = self.factory.post('/api/restaurants/reviews/create/', post_data)

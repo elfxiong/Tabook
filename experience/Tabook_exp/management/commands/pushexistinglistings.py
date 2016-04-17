@@ -24,31 +24,31 @@ class Command(BaseCommand):
                 # producer = KafkaProducer(bootstrap_servers='kafka:9092')
                 for reservation in reservation_list:
                     restaurant_name = ''
-                    #get table
+                    # get table
                     url = settings.MODELS_LAYER_URL + "api/tables/filter/"
                     try:
                         table = None
                         while table is None:
-                            resp = requests.get(url,params={'id':reservation['table']}).json()
+                            resp = requests.get(url, params={'id': reservation['table']}).json()
                             if resp['success']:
                                 table = resp['result'][0]
-                                #self.stdout.write('talbe: ' + str(table))
-                            #get restaurant
+                                # self.stdout.write('talbe: ' + str(table))
+                                # get restaurant
                         url = settings.MODELS_LAYER_URL + "api/restaurants/" + str(table['restaurant']) + '/'
                         try:
                             response = requests.get(url).json()
-                            #self.stdout.write('response' + str(response))
+                            # self.stdout.write('response' + str(response))
                             restaurant_name = response['result']['restaurant_name']
-                            #self.stdout.write(restaurant_name)
+                            # self.stdout.write(restaurant_name)
                         except Exception as e:
-                            #self.stdout.write(str(e))
+                            # self.stdout.write(str(e))
                             self.stdout.write('exception in filtering restaurant by id')
                     except Exception as e:
                         self.stdout.write(str(e))
                         self.stdout.write('exception in filtering table by id')
 
                     reservation['restaurant_name'] = restaurant_name
-                    self.stdout.write(str(reservation))
+                    # self.stdout.write(str(reservation))
                     es.index(index='listing_index', doc_type='listing', id=reservation['id'],
                              body=reservation)
                     # producer.send('new-listings-topic', json.dumps(reservation).encode('utf-8'))
@@ -63,12 +63,12 @@ class Command(BaseCommand):
 
         # pass
         es.indices.refresh(index="listing_index")
-        self.stdout.write("Finish Reservations")
+        self.stdout.write("Finished pushing reservations")
 
         url = settings.MODELS_LAYER_URL + "api/restaurants/filter/"
         try:
             r = requests.get(url).json()
-            self.stdout.write(str(r))
+            # self.stdout.write(str(r))
             if r['success']:
                 restaurant_list = r['result']
                 # producer = KafkaProducer(bootstrap_servers='kafka:9092')
@@ -86,4 +86,4 @@ class Command(BaseCommand):
             self.handle(*args, **options)
         # pass
         es.indices.refresh(index="restaurant_index")
-        self.stdout.write("Finish Restaurants")
+        self.stdout.write("Finished pushing restaurants")
