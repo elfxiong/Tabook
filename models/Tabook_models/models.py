@@ -45,13 +45,13 @@ class Customer(User):
 
     def save(self, *args, **kwargs):
         # salt?
-        print("saving")
+        # print("saving")
         hashed_password = hashers.make_password(self.password)
         self.password = hashed_password
-        print("saved: " + hashed_password)
+        # print("saved: " + hashed_password)
 
         super(Customer, self).save(*args, **kwargs)
-        print("saved successfully")
+        # print("saved successfully")
 
 
 class Restaurant(User):
