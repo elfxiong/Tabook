@@ -65,4 +65,4 @@ web:
       - "8000:8000"
    volumes:
       - ./web:/app
-   command: bash -c "pip install requests && mod_wsgi-express start-server --url-alias /static /app/Tabook_web/static --reload-on-changes ./Tabook_web/wsgi.py"
+   command: bash -c "pip install -r requirements.txt && mod_wsgi-express start-server --url-alias /static /app/Tabook_web/static --reload-on-changes ./Tabook_web/wsgi.py"
