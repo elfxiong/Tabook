@@ -83,6 +83,14 @@ WSGI_APPLICATION = 'Tabook_web.wsgi.application'
 # }
 # }
 
+# although database are not actually used, the tests.py want a database to exist
+# perhaps there is a way to go around it
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
