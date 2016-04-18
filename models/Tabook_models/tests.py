@@ -81,11 +81,20 @@ class RestaurantAPITestCase(TestCase):
 
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
-    def test_get_restaurant(self):
-        pass
+    # def test_get_restaurant(self):
+    #     pass
 
-    def test_update_restaurant(self):
-        pass
+    def test_update_restaurant_address(self):
+        post_data = {'id': 1, 'address': '10 sucessful change dr'}
+        response = self.factory.post('/api/restuarants/update', post_data)
+        expected_data = {"success": True, "changed": "address"}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
+
+    def test_update_restaurant_phone_bad(self):
+        post_data = {'id': 1, 'phone': 'bad phone'}
+        response = self.factory.post('/api/restuarants/update', post_data)
+        expected_data = {"success": False, "changed": "address"}
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
     def test_filter_restaurant_with_no_parameter(self):
         # expected to get all restaurants
