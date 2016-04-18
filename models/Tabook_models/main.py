@@ -300,7 +300,7 @@ def delete_authenticator(request):
         if len(auth) > 0:
             a = auth.first()
             a.delete()
-        content['success'] = True
+            content['success'] = True
     return JsonResponse(content)
 
 

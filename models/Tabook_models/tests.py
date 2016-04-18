@@ -181,6 +181,7 @@ class AuthenticatorAPITestCase(TestCase):
     def setUp(self):
         self.factory = Client()
         c = Customer.objects.create(username="user", password="pass", email="user@user.com", phone="00000")
+        Authenticator.objects.create(user_type = 'C', user_id = '1', token = '10101010')
 
     def test_create_authenticator_u1(self):
         user_json = json.dumps({'id': 1, 'type': Authenticator.CUSTOMER})
@@ -203,6 +204,37 @@ class AuthenticatorAPITestCase(TestCase):
         response = self.factory.post('/api/auth/authenticator/create/', post_data)
         expected_json = {'success': False, 'result': 'Invalid username name or password.'}
         self.assertJSONEqual(str(response.content, encoding='utf-8'), expected_json)
+
+    def test_delete_authenticator_success(self):
+        post_data = {'authenticator': '10101010'}
+        response = self.factory.post('/api/auth/authenticator/delete/', post_data)
+        expected_json = {'success': True}
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), expected_json)
+
+    def test_delete_authenticator_badtoken(self):
+        post_data = {'authenticator': '0101'}
+        response = self.factory.post('/api/auth/authenticator/delete/', post_data)
+        expected_json = {'success': False}
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), expected_json)
+
+    def test_check_password_success(self):
+        get_data = {'username': 'user', 'password': 'pass'}
+        response = self.factory.get('/api/auth/check_password/', get_data)
+        expected_json = {"success": True, "result": "Customer authenticated successfully.", "user": {"id": 1, "type": "C"}}
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), expected_json)
+
+    def test_check_password_bad_username(self):
+        get_data = {'username': 'bad_user', 'password': 'pass'}
+        response = self.factory.get('/api/auth/check_password/', get_data)
+        expected_json = {'result': 'Invalid username name or password.', 'success': False}
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), expected_json)
+
+    def test_check_password_bad_password(self):
+        get_data = {'username': 'user', 'password': 'bad_pass'}
+        response = self.factory.get('/api/auth/check_password/', get_data)
+        expected_json = {'success': False, 'result': 'Password does not matched.'}
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), expected_json)
+
 
 
 class TableAPITestCase(TestCase):
@@ -256,3 +288,20 @@ class TableAPITestCase(TestCase):
              "x_coordinate": None}]}
 
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
+
+
+class ReservationAPITestcase(TestCase):
+    def setUp(self):
+        pass
+
+    def test_create_reservation_success(self):
+        pass
+
+    def test_update_reservation_success(self):
+        pass
+
+    def test_filter_reservation_noparams(self):
+        pass
+
+    def test_filter_reservation_customer(self):
+        pass
