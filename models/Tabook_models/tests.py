@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from .models import Customer, Restaurant, Table, Review
+from .models import *
 import json
 
 
@@ -157,15 +157,6 @@ class RestaurantAPITestCase(TestCase):
         expected_json = {'result': [], 'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
 
-
-    def test_filter_tables_valid_restaurant_noparams(self):
-        get_data = {'id': 1}
-        expected_json = {
-            'success':True
-        }
-        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
-
-
     def test_create_review_successful(self):
         post_data = {'customer_id': 1, 'restaurant_id': 1,
                      'stars': "5", 'text': 'great food'}
@@ -184,6 +175,34 @@ class RestaurantAPITestCase(TestCase):
         expected_json = {'result': [{'customer_id': 1, 'text': 'great food', 'created': '0', 'stars': 5, 'id': 1}],
                          'success': True}
         self.assertDictEqual(response_json, expected_json)
+
+
+class AuthenticatorAPITestCase(TestCase):
+    def setUp(self):
+        self.factory = Client()
+        c = Customer.objects.create(username="user", password="pass", email="user@user.com", phone="00000")
+
+    def test_create_authenticator_u1(self):
+        user_json = json.dumps({'id': 1, 'type': Authenticator.CUSTOMER})
+        post_data = {'username': 'user', 'password': 'pass', 'user': user_json}
+        response = self.factory.post('/api/auth/authenticator/create/', post_data)
+        response_json = json.loads(str(response.content, encoding='utf-8'))
+        self.assertTrue(response_json["success"])
+        self.assertTrue(response_json['auth'])
+
+    def test_create_authenticator_wrong_pass(self):
+        user_json = json.dumps({'id': 1, 'type': Authenticator.CUSTOMER})
+        post_data = {'username': 'user', 'password': 'bad_pass', 'user': user_json}
+        response = self.factory.post('/api/auth/authenticator/create/', post_data)
+        expected_json = {'success': False, 'result': 'Password does not matched.'}
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), expected_json)
+
+    def test_create_authenticator_wrong_username(self):
+        user_json = json.dumps({'id': 1, 'type': Authenticator.CUSTOMER})
+        post_data = {'username': 'bad_user', 'password': 'pass', 'user': user_json}
+        response = self.factory.post('/api/auth/authenticator/create/', post_data)
+        expected_json = {'success': False, 'result': 'Invalid username name or password.'}
+        self.assertJSONEqual(str(response.content, encoding='utf-8'), expected_json)
 
 
 class TableAPITestCase(TestCase):
