@@ -322,21 +322,6 @@ class ReservationAPITestcase(TestCase):
         self.assertTrue("reservation" in response_json)
         self.assertTrue(response_json['success'])
 
-
-    def test_update_reservation_table(self):
-        # post_data = {'id': Reservation.objects.get(pk=1).id, 'table': Table.objects.get(pk=1)}
-        # response = self.factory.post('/api/restaurants/update/', post_data)
-        # expected_data = {"success": True, "changed": ["table"]}
-        # self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
-        pass
-
-    def test_update_reservation_customer(self):
-        # post_data = {'id': 1, 'customer': '2'}
-        # response = self.factory.post('/api/restaurants/update/', post_data)
-        # expected_data = {"success": True, "changed": ["address"]}
-        # self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
-        pass
-
     def test_filter_reservation_noparams(self):
         get_data = {}
         response = self.factory.get('/api/reservations/filter/', get_data)
