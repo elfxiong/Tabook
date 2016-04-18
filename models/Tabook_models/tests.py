@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from .models import *
 import json
+import datetime
 
 
 class CustomerAPITestCase(TestCase):
@@ -292,16 +293,62 @@ class TableAPITestCase(TestCase):
 
 class ReservationAPITestcase(TestCase):
     def setUp(self):
-        pass
+        self.factory = Client()
+        c1 = Customer.objects.create(username="user", password="pass", email="user@user.com", phone="00000")
+        c2 = Customer.objects.create(username="cat", password="meow", email="meow@cat.zoo", phone="333")
+        r1 = Restaurant.objects.create(username="lion", password="roar", email="roar@lion.zoo", phone="55555")
+        t1 = Table.objects.create(restaurant=r1, capacity=4)
+        t2 = Table.objects.create(restaurant=r1, capacity=3)
+        res1 = Reservation.objects.create(customer = c1, end_time = str(datetime.datetime.now()), start_time = str(datetime.datetime.now()),
+                     table = t1)
 
     def test_create_reservation_success(self):
+        post_data = {'customer': 1, 'end_time': str(datetime.datetime.now()), 'start_time': str(datetime.datetime.now()),
+                     'table': 1}
+        response = self.factory.post('/api/reservations/create/', post_data)
+        # expected_json = {
+        #     'reservation': {
+        #        'created': '2016-04-18T18:23:24.376Z',
+        #        'customer': 1,
+        #        'end_time': '2016-04-18T18:23:24.367Z',
+        #        'id': 1,
+        #        'restaurant_name': 'anonymous',
+        #        'start_time': '2016-04-18T18:23:24.367Z',
+        #        'status': '',
+        #        'table': 1},
+        #     'success': True
+        # }
+        response_json = json.loads(str(response.content, encoding='utf-8'))
+        self.assertTrue("reservation" in response_json)
+        self.assertTrue(response_json['success'])
+
+
+    def test_update_reservation_table(self):
+        # post_data = {'id': Reservation.objects.get(pk=1).id, 'table': Table.objects.get(pk=1)}
+        # response = self.factory.post('/api/restaurants/update/', post_data)
+        # expected_data = {"success": True, "changed": ["table"]}
+        # self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
         pass
 
-    def test_update_reservation_success(self):
+    def test_update_reservation_customer(self):
+        # post_data = {'id': 1, 'customer': '2'}
+        # response = self.factory.post('/api/restaurants/update/', post_data)
+        # expected_data = {"success": True, "changed": ["address"]}
+        # self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
         pass
 
     def test_filter_reservation_noparams(self):
-        pass
+        get_data = {}
+        response = self.factory.get('/api/reservations/filter/', get_data)
+        expected_data = {}
+        response_json = json.loads(str(response.content, encoding='utf-8'))
+        self.assertTrue(response_json['success'])
+        self.assertTrue('result' in response_json)
 
     def test_filter_reservation_customer(self):
-        pass
+        get_data = {'customer': 1}
+        response = self.factory.get('/api/reservations/filter/', get_data)
+        response_json = json.loads(str(response.content, encoding='utf-8'))
+        self.assertTrue(response_json['success'])
+        for reservation in response_json['result']:
+            self.assertTrue(reservation['customer'] == 1)

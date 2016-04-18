@@ -379,29 +379,30 @@ def get_reservation(request, id):
     return JsonResponse(content)
 
 
-def update_reservation(request):
-    content = {'success': False}
-    if request.method != "POST":
-        content['result'] = "Invalid request method. Expected POST."
-    elif 'id' not in request.POST:
-        content['result'] = "Reservation id not provided."
-    else:
-        try:
-            uid = request.POST['id']
-            user = Reservation.objects.get(pk=uid)
-        except Reservation.DoesNotExist:
-            content['result'] = "Reservation not found."
-        else:
-            changed = []
-            for field_name in ['customer', 'table', 'status', 'created', 'start_time', 'end_time']:
-                if field_name in request.POST:
-                    value = request.POST[field_name]
-                    setattr(user, field_name, value)
-                    changed.append(field_name)
-            user.save()
-            content['changed'] = changed
-            content['success'] = True
-    return JsonResponse(content)
+# def update_reservation(request):
+#     print('running update_reservation')
+#     content = {'success': False}
+#     if request.method != "POST":
+#         content['result'] = "Invalid request method. Expected POST."
+#     elif 'id' not in request.POST:
+#         content['result'] = "Reservation id not provided."
+#     else:
+#         try:
+#             uid = request.POST['id']
+#             reservation = Reservation.objects.get(pk=uid)
+#         except Reservation.DoesNotExist:
+#             content['result'] = "Reservation not found."
+#         else:
+#             changed = []
+#             for field_name in ['customer', 'table', 'status', 'created', 'start_time', 'end_time']:
+#                 if field_name in request.POST:
+#                     value = request.POST[field_name]
+#                     setattr(reservation, field_name, value)
+#                     changed.append(field_name)
+#                     content['success'] = True
+#             reservation.save()
+#             content['changed'] = changed
+#     return JsonResponse(content)
 
 
 # filter reservations and return a list of reservations with info
