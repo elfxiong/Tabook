@@ -86,14 +86,14 @@ class RestaurantAPITestCase(TestCase):
 
     def test_update_restaurant_address(self):
         post_data = {'id': 1, 'address': '10 sucessful change dr'}
-        response = self.factory.post('/api/restuarants/update', post_data)
-        expected_data = {"success": True, "changed": "address"}
+        response = self.factory.post('/api/restaurants/update/', post_data)
+        expected_data = {"success": True, "changed": ["address"]}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
-    def test_update_restaurant_phone_bad(self):
-        post_data = {'id': 1, 'phone': 'bad phone'}
-        response = self.factory.post('/api/restuarants/update', post_data)
-        expected_data = {"success": False, "changed": "address"}
+    def test_update_restaurant_address_and_phone(self):
+        post_data = {'id': 1, 'address': '10 sucessful change dr', 'phone': 703}
+        response = self.factory.post('/api/restaurants/update/', post_data)
+        expected_data = {"success": True, "changed": ['phone', 'address']}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_data)
 
     def test_filter_restaurant_with_no_parameter(self):
@@ -156,6 +156,15 @@ class RestaurantAPITestCase(TestCase):
         response = self.factory.get('/api/restaurants/filter/', get_data)
         expected_json = {'result': [], 'success': True}
         self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
+
+    def test_filter_tables_valid_restaurant_noparams(self):
+        get_data = {'id': 1}
+        expected_json = {
+            'success':True
+        }
+        self.assertJSONEqual(str(response.content, encoding='utf8'), expected_json)
+
 
     def test_create_review_successful(self):
         post_data = {'customer_id': 1, 'restaurant_id': 1,

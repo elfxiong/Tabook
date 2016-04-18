@@ -164,22 +164,22 @@ def filter_restaurant(request):
     return JsonResponse(content)
 
 
-def get_table(request, id):
-    content = {"success": False}
-    if request.method != 'GET':
-        content['result'] = "Invalid request method. Expected GET."
-    else:
-        try:
-            user = Table.objects.get(pk=id)
-        except Table.DoesNotExist:
-            content["result"] = "table not found"
-        else:
-            result = {}
-            for field_name in ['id', 'restaurant_id', 'capacity', 'style', 'x_coordinate', 'y_coordinate']:
-                result[field_name] = getattr(user, field_name)
-            content['result'] = result
-            content["success"] = True
-    return JsonResponse(content)
+# def get_table(request, id):
+#     content = {"success": False}
+#     if request.method != 'GET':
+#         content['result'] = "Invalid request method. Expected GET."
+#     else:
+#         try:
+#             user = Table.objects.get(pk=id)
+#         except Table.DoesNotExist:
+#             content["result"] = "table not found"
+#         else:
+#             result = {}
+#             for field_name in ['id', 'restaurant_id', 'capacity', 'style', 'x_coordinate', 'y_coordinate']:
+#                 result[field_name] = getattr(user, field_name)
+#             content['result'] = result
+#             content["success"] = True
+#     return JsonResponse(content)
 
 
 def filter_tables(request):

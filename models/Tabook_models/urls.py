@@ -28,7 +28,7 @@ urlpatterns = [
     url(r'^api/customers/(?P<id>\d+)/$', get_customer),
     url(r'^api/customers/update/$', update_customer),
     url(r'^api/restaurants/create/$', create_restaurant),
-    url(r'^api/restaurants/(?P<id>\d+)/$', get_restaurant),
+    # url(r'^api/restaurants/(?P<id>\d+)/$', get_restaurant),
     url(r'^api/restaurants/update/$', update_restaurant),
     url(r'^api/restaurants/filter/$', filter_restaurant),
     url(r'^api/restaurants/reviews/$', get_reviews),
