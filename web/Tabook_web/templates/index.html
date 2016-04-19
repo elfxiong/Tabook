@@ -22,7 +22,7 @@
                         </header>
                         <div class="row">
                             {% for restaurant in recommended_restaurants %}
-                                <div class="4u 12u(mobile)">
+                                <div class="4u 12u(mobile)" id="restaurnt_details_{{ restaurant.restaurant_name }}">
                                     <section class="box">
                                         <a href="#" class="image featured"><img src="{% static "images/pic02.jpg" %}"
                                                                                 alt=""/></a>
@@ -36,7 +36,7 @@
 {#                                            lorem blandit adipiscing et feugiat phasellus tempus dolore ipsum lorem#}
 {#                                            dolore.</p>#}
                                         <footer>
-                                            <a href="{% url "restaurant_page" restaurant.id %}" class="button alt">Find
+                                            <a href="{% url "restaurant_page" restaurant.id %}" name="details_link_{{ restaurant.restaurant_name }}" class="button alt">Find
                                                 out more</a>
                                         </footer>
                                     </section>

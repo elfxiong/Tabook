@@ -61,3 +61,45 @@ class SearchBarTest(LiveServerTestCase):
         for restaurant_box in restaurant_boxes:
             # print(str(restaurant_box.text))
             self.assertIn("somewhere", restaurant_box.text)
+
+
+class RestaurantDetailsPageTest(LiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Firefox()
+        self.browser.implicitly_wait(3)
+
+    def setUp(self):
+        self.browser = webdriver.Firefox()
+        self.browser.implicitly_wait(3)
+
+    def tearDown(self):
+        self.browser.quit()
+        pass
+
+    def logIn(self):
+        self.browser.get(self.get_full_url("homepage"))
+        # log in
+        element = self.browser.find_element_by_name("login_page")
+        element.submit()
+        username_field = self.browser.find_element_by_name("username")
+        username_field.send_keys("admin")
+        password_field = self.browser.find_element_by_name("password")
+        password_field.send_keys("adminpassword")
+        submit_button = self.browser.find_element_by_id("submit_button")
+        submit_button.submit()
+
+
+    def get_full_url(self, namespace):
+        local_server_url = "http://192.168.99.100:8000"  # CHANGE THIS TO YOUR WEB URL
+        # return self.live_server_url + reverse(namespace)
+        return local_server_url + reverse(namespace)
+
+    def test_go_to_restaurant_details(self):
+        self.browser.get(self.get_full_url("homepage"))
+        self.logIn()
+        restaurant_details_link = self.browser.find_element_by_name("details_link_Starbucks")
+        restaurant_details_link.submit()
+        # redirect to restaurant_details_page
+        self.assertContains("Address")
+
+

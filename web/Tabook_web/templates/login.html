@@ -36,15 +36,15 @@
                             {% csrf_token %}
                             <div class="form-group">
                                 <label>Username</label>
-                                <input type="text" class="form-control" name="username" placeholder="Username" value="{{ form.username.value }}">
+                                <input type="text" class="form-control" id="username" name="username" placeholder="Username" value="{{ form.username.value }}">
                                 <p class="help-block">{{ form.username.errors }}</p>
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
-                                <input style="padding:0em 0.75em" type="password" class="form-control" name="password" placeholder="Password">
+                                <input style="padding:0em 0.75em" type="password" class="form-control" id="password" name="password" placeholder="Password">
                                 <p class="help-block">{{ form.password.errors }}</p>
                             </div>
-                            <button type="submit" class="button">Login</button>
+                            <button type="submit" id="submit_button" class="button">Login</button>
                         </form>
                     </article>
 

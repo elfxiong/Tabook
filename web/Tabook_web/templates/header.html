@@ -16,24 +16,24 @@
                         href="{% url "restaurant_list" %}">Restaurants</a></li>
                 {% if not username.username %}
                     <li class="{% active_page request "login_page" %}">
-                        <a href="{% url "login_page" %}">
+                        <a name="login_page" href="{% url "login_page" %}">
                             Login
                         </a>
                     </li>
                     <li class="{% active_page request "signup_page" %}">
-                        <a href="{% url "signup_page" %}">
+                        <a name="signup_page" href="{% url "signup_page" %}">
                             Signup
                         </a>
                     </li>
                 {% endif %}
                 {% if username.username %}
                     <li class="{% active_page request "reservation_history" %}">
-                        <a href="{% url "reservation_history" %}">
+                        <a name="reservation_history_page" href="{% url "reservation_history" %}">
                             {{ username.username }}'s Reservation History
                         </a>
                     </li>
                     <li class="{% active_page request "logout" %}">
-                        <a href="{% url "logout" %}">
+                        <a name="logout_page" href="{% url "logout" %}">
                             Logout
                         </a>
                     </li>
