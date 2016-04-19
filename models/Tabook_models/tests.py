@@ -310,8 +310,8 @@ class ReservationAPITestcase(TestCase):
         r1 = Restaurant.objects.create(username="lion", password="roar", email="roar@lion.zoo", phone="55555")
         t1 = Table.objects.create(restaurant=r1, capacity=4)
         t2 = Table.objects.create(restaurant=r1, capacity=3)
-        res1 = Reservation.objects.create(customer=c1, end_time=str(datetime.datetime.now()),
-                                          start_time=str(datetime.datetime.now()),
+        res1 = Reservation.objects.create(customer=c1, end_time=datetime.datetime.now(datetime.timezone.utc),
+                                          start_time=datetime.datetime.now(datetime.timezone.utc),
                                           table=t1)
 
     def test_create_reservation_success(self):
