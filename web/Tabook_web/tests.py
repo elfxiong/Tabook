@@ -78,9 +78,11 @@ class RestaurantDetailsPageTest(LiveServerTestCase):
 
     def logIn(self):
         self.browser.get(self.get_full_url("homepage"))
+        print(self.browser.window_handles)
         # log in
         element = self.browser.find_element_by_name("login_page")
-        element.submit()
+        element.click()
+
         username_field = self.browser.find_element_by_name("username")
         username_field.send_keys("admin")
         password_field = self.browser.find_element_by_name("password")
@@ -98,8 +100,9 @@ class RestaurantDetailsPageTest(LiveServerTestCase):
         self.browser.get(self.get_full_url("homepage"))
         self.logIn()
         restaurant_details_link = self.browser.find_element_by_name("details_link_Starbucks")
-        restaurant_details_link.submit()
+        restaurant_details_link.click()
         # redirect to restaurant_details_page
-        self.assertContains("Address")
+        address = self.browser.find_element_by_id("Address")
+        self.assertIn("Address", address.text)
 
 
