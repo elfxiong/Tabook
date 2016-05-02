@@ -5,7 +5,7 @@ from pyspark import SparkContext
 sc = SparkContext("spark://spark-master:7077", "PopularItems")
 
 # 1. Read data in as pairs of (user_id, item_id clicked on by the user)
-data = sc.textFile("/tmp/data/data_10000.txt", 2)  # each worker loads a piece of the data file
+data = sc.textFile("/tmp/data/data_10.txt", 2)  # each worker loads a piece of the data file
 
 pairs = data.map(lambda line: line.split("\t"))  # tell each worker to split each line of it's partition
 user_to_item = pairs.map(lambda pair: (pair[0], pair[1]))
@@ -31,7 +31,7 @@ output = count.collect()  # bring the data back to the master node so we can pri
 print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 with open("output.txt", "w+") as output_file:
     for item_pair, count in output:
-        print("{}\t{}\n".format(item_pair, count))
+        print("{}\t{}".format(item_pair, count))
     print("Popular items done")
 print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
 
